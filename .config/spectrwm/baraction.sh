@@ -1,0 +1,70 @@
+#!/bin/bash
+# baraction.sh for spectrwm status bar
+
+## DISK
+hdd() {
+  hdd="$(df -h | awk 'NR==4{print $3, $5}')"
+  icon=""
+  icon1=" "
+  printf " %s %s %s \\n" "$icon""$icon1" "$hdd"
+}
+
+## RAM
+mem() {
+  mem=`free | awk '/Mem/ {printf "%dM/%dM\n", $3 / 1024.0, $2 / 1024.0 }'`
+  icon=""
+  icon1=" "
+  printf " %s %s %s \\n" "$icon""$icon1"  "$mem"
+}
+
+## CPU
+cpu() {
+  read cpu a b c previdle rest < /proc/stat
+  prevtotal=$((a+b+c+previdle))
+  sleep 0.5
+  read cpu a b c idle rest < /proc/stat
+  total=$((a+b+c+idle))
+  cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
+  icon=""
+  icon1=" "
+  printf " %s %s %s \\n" "$icon""$icon1" "cpu: $cpu%"
+  
+}
+
+## VOLUME
+vol() {
+    
+    vol=$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
+    icon=""
+    icon1=" "
+    printf " %s %s %s \\n" "$icon""$icon1" "$vol"
+}
+
+net() {
+R1=`cat /sys/class/net/enp34s0/statistics/rx_bytes`
+T1=`cat /sys/class/net/enp34s0/statistics/tx_bytes`
+sleep 1
+R2=`cat /sys/class/net/enp34s0/statistics/rx_bytes`
+T2=`cat /sys/class/net/enp34s0/statistics/tx_bytes`
+TBPS=`expr $T2 - $T1`
+RBPS=`expr $R2 - $R1`
+TKBPS=`expr $TBPS / 1024`
+RKBPS=`expr $RBPS / 1024`
+icon=""
+icon1=""
+icon2=" "
+icon3=" "
+printf " %s %s %s %s %s \\n" "$icon" "$RKBPS kb" "$icon3""$icon1" "$TKBPS kb"
+}
+
+SLEEP_SEC=3
+#loops forever outputting a line every SLEEP_SEC secs
+
+# It seems that we are limited to how many characters can be displayed via
+# the baraction script output. And the the markup tags count in that limit.
+# So I would love to add more functions to this script but it makes the 
+# echo output too long to display correctly.
+while :; do
+    echo "+@fg=0;+@fn=1;+@fn=0;$(net)+@fg=0;|+@fg=2;+@fn=1;+@fn=0;$(cpu)+@fg=0;|+@fg=3;+@fn=1;+@fn=0;$(mem)+@fg=0;|+@fg=4;+@fn=1;+@fn=0;$(hdd)+@fg=0;|+@fg=5;+@fn=1;+@fn=0;$(vol)+@fg=0;|"
+	sleep $SLEEP_SEC
+done
