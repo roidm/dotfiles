@@ -29,11 +29,11 @@ workspaces = lambda: [
     widget.GroupBox(
         **base(fg='light'),
         font='UbuntuMono Nerd Font',
-        fontsize=24,
-        margin_y=3,
-        margin_x=8,
-        padding_y=8,
-        padding_x=5,
+        fontsize=23,
+        margin_y=2,
+        margin_x=2,
+        padding_y=2,
+        padding_x=2,
         borderwidth=1,
         active=colors['active'],
         inactive=colors['active'],
@@ -53,12 +53,24 @@ workspaces = lambda: [
 ]
 
 primary_widgets = [
-
+    
     widget.Image(
         scale=0.35,
         padding=5,
+        filename = "~/.config/qtile/icons/bar.png"
+    ), 
+
+    widget.Image(
+        scale=0.38,
+        padding=5,
         filename = "~/.config/qtile/icons/gentoo.png",
         mouse_callbacks = {'Button1': lambda qtile: qtile.cmd_spawn('dmenu_run')}
+    ), 
+    
+    widget.Image(
+        scale=0.35,
+        padding=5,
+        filename = "~/.config/qtile/icons/bar.png"
     ), 
     
     *workspaces(),
@@ -76,13 +88,15 @@ primary_widgets = [
     icon(bg="color3", text=' '),  # Icon: nf-fa-feed
     
     widget.Net(**base(bg='color3'), interface='enp34s0'),
+    
+    
 
     powerline('color2', 'color3'),
 
     widget.CurrentLayoutIcon(**base(bg='color2'), scale=0.55),
 
     widget.CurrentLayout(**base(bg='color2'), padding=5),
-
+    
     powerline('color1', 'color2'),
 
     icon(bg="color1", fontsize=22, text=' '), # Icon: nf-mdi-calendar_clock

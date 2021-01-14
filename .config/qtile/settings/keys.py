@@ -45,7 +45,7 @@ keys = [Key(key[0], key[1], *key[2:]) for key in [
     ([mod1], "space", lazy.spawn("dmenu_run")),
 
     # Window Nav
-    ([mod, "shift"], "m", lazy.spawn("rofi -show")),
+    ([mod, "shift"], "m", lazy.spawn("rofi -show drun")),
 
     # Browser
     ([mod], "b", lazy.spawn("firefox")),
