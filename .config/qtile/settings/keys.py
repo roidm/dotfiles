@@ -52,6 +52,15 @@ keys = [Key(key[0], key[1], *key[2:]) for key in [
 
     # File Explorer
     ([mod], "e", lazy.spawn("pcmanfm")),
+    
+    #kate
+    ([mod1, "shift"], "k", lazy.spawn("kate")),
+    
+    #gnome-disks
+    ([mod], "d", lazy.spawn("gnome-disks")),
+    
+    #gnome-system-monitor
+    ([mod], "g", lazy.spawn("gnome-system-monitor")),
 
     # Terminal
     ([mod], "Return", lazy.spawn("alacritty")),

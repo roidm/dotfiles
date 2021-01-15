@@ -8,8 +8,7 @@ layout_conf = {
     'border_focus': colors['focus'][0],
     'border_normal': colors['inactive2'][0],
     'border_width': 3,
-    #'border_normal': colors['unfocus'][0],
-    'margin': 12
+    'margin': 15
 }
 
 layouts = [
@@ -46,3 +45,5 @@ floating_layout = layout.Floating(
     ],
     border_focus=colors["color4"][0]
 )
+auto_fullscreen = True
+focus_on_window_activation = "smart"

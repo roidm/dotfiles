@@ -54,52 +54,48 @@ workspaces = lambda: [
 
 primary_widgets = [
     
-    widget.Image(
-        scale=0.35,
-        padding=5,
-        filename = "~/.config/qtile/icons/bar.png"
-    ), 
+    widget.Sep(linewidth=0, padding=7, background = colors['dark']),
 
-    widget.Image(
-        scale=0.38,
-        padding=5,
-        filename = "~/.config/qtile/icons/gentoo.png",
-        mouse_callbacks = {'Button1': lambda qtile: qtile.cmd_spawn('dmenu_run')}
-    ), 
+    widget.Image(scale=0.45, padding=9, filename = "~/.config/qtile/icons/gentoo.png", mouse_callbacks = {'Button1': lambda qtile:qtile.cmd_spawn('dmenu_run')}), 
     
-    widget.Image(
-        scale=0.35,
-        padding=5,
-        filename = "~/.config/qtile/icons/bar.png"
-    ), 
-    
+    widget.Sep(linewidth=0, padding=3, background = colors['dark']),
+            
     *workspaces(),
 
     separator(),
-
-   # powerline('color4', 'dark'),
-
-    #icon(bg="color4", text=' '), # Icon: nf-fa-download
     
-   # widget.Emerge(**base(bg='color4'), update_interval=1800),
 
     powerline('color3'),
 
-    icon(bg="color3", text=' '),  # Icon: nf-fa-feed
+    widget.Net(**base(bg='color3'), interface='enp34s0', format = '↓ {down} ↑ {up}', padding=10, update_interval=1.5),
     
-    widget.Net(**base(bg='color3'), interface='enp34s0'),
+    powerline('color7', 'color3'),
     
+    icon(bg="color7", fontsize=22, text='﬙ '),
     
+    widget.CPU(foreground = colors['dark'], background = colors['color7'], padding = 10, update_interval=1.5, format = '{load_percent}%'),
+    
+    powerline('color5', 'color7'),
+    
+    widget.TextBox(text = " Vol:", foreground = colors['dark'], background = colors['color5'], padding=0),
+    
+    widget.Volume(foreground = colors['dark'], background = colors['color5'], padding = 10),
+    
+    powerline('color6', 'color5'),
 
-    powerline('color2', 'color3'),
+    icon(bg="color6", fontsize=22, text=' '), # Icon: nf-fa-download
+    
+    widget.Memory(background=colors['color6'], foreground=colors['dark'], update_interval=2.0, padding=10),
 
-    widget.CurrentLayoutIcon(**base(bg='color2'), scale=0.55),
+    powerline('color2', 'color6'),
+
+    widget.CurrentLayoutIcon(**base(bg='color2'), scale=0.50),
 
     widget.CurrentLayout(**base(bg='color2'), padding=5),
     
     powerline('color1', 'color2'),
 
-    icon(bg="color1", fontsize=22, text=' '), # Icon: nf-mdi-calendar_clock
+    icon(bg="color1", fontsize=20, text=' '), # Icon: nf-mdi-calendar_clock
 
     widget.Clock(**base(bg='color1'), format='%d/%m/%Y - %H:%M '),
 
@@ -123,7 +119,7 @@ secondary_widgets = [
 
 widget_defaults = {
     'font': 'UbuntuMono Nerd Font Bold',
-    'fontsize': 16,
-    'padding': 1,
+    'fontsize': 17,
+    'padding': 2,
 }
 extension_defaults = widget_defaults.copy()
