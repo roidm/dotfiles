@@ -5,7 +5,7 @@ from settings.theme import colors
 
 
 layout_conf = {
-    'border_focus': colors['focus'][0],
+    'border_focus': colors['colorA'][0],
     'border_normal': colors['inactive2'][0],
     'border_width': 3,
     'margin': 15

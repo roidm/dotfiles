@@ -8,7 +8,7 @@ from settings.path import qtile_path
 
 
 def load_theme():
-    theme = "onedark"
+    theme = "nord"
 
     config = path.join(qtile_path, "config.json")
     if path.isfile(config):
