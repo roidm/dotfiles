@@ -1,3 +1,5 @@
+Xcursor.theme: Adwaita
+
 Xft.dpi: 125
 Xft.antialias: true
 Xft.hinting: true
@@ -7,9 +9,9 @@ Xft.hintstyle: hintSlight
 Xft.lcdfilter: lcdfilter
 
 XTerm*renderFont: true
-XTerm*faceName: xft:UbuntuMono Nerd Font:size=12, \
-                xft:JoyPixels:size=12, \
-                xft:Monospace:style=Medium:size=12   
+XTerm*faceName: xft:UbuntuMono Nerd Font:size=16 \
+                xft:JoyPixels:size=16, \
+                xft:Monospace:style=Medium:size=16   
 XTerm*faceSize: 16
 XTerm*utf8: 2
 XTerm*locale: true
@@ -32,9 +34,9 @@ URxvt*imLocale: en_US.UTF-8
 URxvt*termName: rxvt-unicode-256color
 URxvt*buffered: false
 URxvt.intensityStyles: false
-URxvt.font: xft:UbuntuMono Nerd Font:size=12, \
-            xft:JoyPixels:size=12, \
-            xft:Monospace:style=Medium:size=12   
+URxvt.font: xft:UbuntuMono Nerd Font:size=16, \
+            xft:JoyPixels:size=16, \
+            xft:Monospace:style=Medium:size=16   
 URxvt.saveLines: 2000
 URxvt.scrollBar: false
 URxvt.cursorColor: white
@@ -44,7 +46,6 @@ URxvt.perl-ext-common: default,matcher,resize-font,url-select,keyboard-select,cl
 URxvt.colorUL: #4682B4
 !! url-select
 URxvt.keysym.M-u: perl:url-select:select_next
-URxvt.url-select.launcher: urxvt -e lynx -cfg=~/.lynx.cfg -lss=~/.lynx.lss
 URxvt.url-select.underline: true
 !! keyboard-select:
 URxvt.keysym.M-Escape: perl:keyboard-select:activate
@@ -52,7 +53,6 @@ URxvt.keysym.M-Escape: perl:keyboard-select:activate
 URxvt.keysym.C-k:   font-size:increase
 URxvt.keysym.C-j:   font-size:decrease
 !! Matcher
-URxvt.url-launcher:	urxvt -e lynx -cfg=~/.lynx.cfg -lss=~/.lynx.lss
 URxvt.matcher.button: 1
 !!clipboard
 URxvt.keysym.M-c: perl:clipboard:copy
@@ -64,11 +64,11 @@ URxvt*depth: 32
 !! COLORS
 
 !!URxvt*foreground:   #bbc5ff
-!!URxvt*background:   [95]#13161a
+!!URxvt*background:   [95]#121419
 !!URxvt*cursorColor:  #bbc5ff
 !!
 !!XTerm*foreground: #bbc5ff
-!!XTerm*background: #13161a
+!!XTerm*background: #121419
 !!XTerm*cursorColor: #bbc5ff
 !!
 !!! black
@@ -140,40 +140,42 @@ URxvt*depth: 32
 !!*.color15:      #dfdfdf
 !!
 
+#define nord0 #2E3440
+#define nord1 #3B4252
+#define nord2 #434C5E
+#define nord3 #4C566A
+#define nord4 #D8DEE9
+#define nord5 #E5E9F0
+#define nord6 #ECEFF4
+#define nord7 #8FBCBB
+#define nord8 #88C0D0
+#define nord9 #81A1C1
+#define nord10 #5E81AC
+#define nord11 #BF616A
+#define nord12 #D08770
+#define nord13 #EBCB8B
+#define nord14 #A3BE8C
+#define nord15 #B48EAD
 
-! special
-*.foreground:   #bbc2cf
-*.background:   #13161a
-*.cursorColor:  #bbc2cf
+*.foreground:   nord4
+*.background:   nord0
+*.cursorColor:  nord4
+*fading: 35
+*fadeColor: nord3
 
-! black
-*.color0:       #1c1f24
-*.color8:       #5b6268
-
-! red
-*.color1:       #ff6c6b
-*.color9:       #da8548
-
-! green
-*.color2:       #98be65
-*.color10:      #4db5bd
-
-! yellow
-*.color3:       #da8548
-*.color11:      #ecbe7b
-
-! blue
-*.color4:       #51afef
-*.color12:      #3071db
-
-! magenta
-*.color5:       #c678dd
-*.color13:      #a9a1e1
-
-! cyan
-*.color6:       #5699af
-*.color14:      #46d9ff
-
-! white
-*.color7:       #202328
-*.color15:      #dfdfdf
+*.color0: nord1
+*.color1: nord11
+*.color2: nord14
+*.color3: nord13
+*.color4: nord9
+*.color5: nord15
+*.color6: nord8
+*.color7: nord5
+*.color8: nord3
+*.color9: nord11
+*.color10: nord14
+*.color11: nord13
+*.color12: nord9
+*.color13: nord15
+*.color14: nord7
+*.color15: nord6
