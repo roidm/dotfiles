@@ -16,37 +16,19 @@ screenchange-reload = true
 ;compositing-border = over
 
 ; Define fallback values used by all module formats
-format-foreground = #FF0000
+format-foreground = #f4f4f4
 format-background = #252831
-format-underline =
-format-overline =
-format-spacing =
-format-padding =
-format-margin =
-format-offset =
+label-font = 1
+content-font = 1
+format-font = 1
+format-padding = 0
 
 [colors]
 background = #252831
 bg3 = #665c54
 foreground = #c6c6c6
 foreground-alt = #a4a4a4
-red = #cc241d
-green = #98971a
-yellow = #d79921
-blue = #458588
-purple = #b16286
-aqua = #689d6a
-gray = #928374
-orange = #d65d0e
-lightred = #fb4934
-lightgreen = #b8bb26
-lightyellow = #fabd2f
-lightblue = #83a598
-lightpurple = #d3869bq
-lightaqua = #8ec07c
-lightgray = #a89984q
-lightorange = #fe8019
-urgent = #f76767
+
 
 
 [bar/main]
@@ -58,7 +40,7 @@ offset-x = 0%
 radius = 1
 fixed-center = true
 modules-left = gentoo dwm 
-modules-right = arrow networkspeedup networkspeeddown arrow4 memory arrow1 cpu arrow7 pavolume arrow6 date arrow5
+modules-right = arrow networkspeeddown networkspeedup arrow4 memory arrow1 cpu arrow7 pavolume arrow6 date arrow5
 override-redirect = false
 tray-position = right
 tray-padding = 2
@@ -71,7 +53,7 @@ font-1 = "UbuntuMono Nerd Font:size=28;6"
 font-2 = "Font Awesome 5 Free:style=Regular:pixelsize=14;1"
 font-3 = "Font Awesome 5 Free:style=Solid:pixelsize=14;1"
 font-4 = "Font Awesome 5 Brands:pixelsize=16;1"
-font-5 = "UbuntuMono Nerd Font:type=bold:size=35;2"
+font-5 = "UbuntuMono Nerd Font:type=bold:size=16;2"
 font-6 = "UbuntuMono Nerd Font:size=16:antialias=true:autohint=true;2"
 
 
@@ -293,7 +275,7 @@ interval = 5
 date = " %d/%m/%Y -"
 date-alt = " %a %b %d, %Y"
 time = %H:%M
-time-alt = %l:%M%p
+time-alt = %H:%M%
 format-prefix ="   "
 format-prefix-foreground = #212121
 format-foreground = #212121
@@ -348,7 +330,7 @@ type = internal/network
 ;interface = enp14s0
 ;interface = enp0s31f6
 interface = enp34s0
-label-connected = "%upspeed:7%"
+label-connected = "%upspeed:7% "
 format-connected = <label-connected>
 format-connected-prefix = " "
 format-connected-prefix-foreground = #212121
@@ -474,34 +456,6 @@ ramp-signal-7 = █
 ramp-signal-foreground = #7e52c6
 
 
-
-
-################################################################################
-
-[module/xmenu]
-type = custom/script
-interval = 1200
-exec = echo "  "
-click-left = "sh /home/dt/xmenu/xmenu.sh"
-format-foreground = ${colors.foreground}
-format-background = ${colors.background}
-################################################################################
-
-[module/xwindow]
-;https://github.com/jaagr/polybar/wiki/Module:-xwindow
-type = internal/xwindow
-
-; Available tokens:
-;   %title%
-; Default: %title%
-label = %title%
-label-maxlen = 50
-
-format-prefix = "  "
-format-prefix-underline = #292d3e
-format-underline = #e1acff
-format-foreground = #e1acff
-format-background = ${colors.background}
 
 ###############################################################################
 # vim:ft=dosini
