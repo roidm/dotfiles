@@ -20,8 +20,8 @@ local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/nord-powerarrow"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.font                                      = "UbuntuMono Nerd Font 12"
-theme.taglist_font                              = "UbuntuMono Nerd Font 13"
-theme.tasklist_font                             = "UbuntuMono Nerd Font Bold 12"           
+theme.taglist_font                              = "UbuntuMono Nerd Font 15"
+theme.tasklist_font                            = "UbuntuMono Nerd Font Bold 12"           
 theme.fg_normal                                 = "#d8dee9"
 theme.fg_focus                                  = "#81a1c1"
 theme.fg_urgent                                 = "#CC9393"
@@ -39,22 +39,10 @@ theme.titlebar_fg_focus                         = theme.fg_focus
 theme.menu_height                               = dpi(16)
 theme.menu_width                                = dpi(140)
 theme.taglist_disable_icon = true
-theme.layout_txt_tile                           = "[]="
-theme.layout_txt_tileleft                       = "=[]"
-theme.layout_txt_tilebottom                     = "[TTT]"
-theme.layout_txt_tiletop                        = "[TT]"
-theme.layout_txt_fairv                          = "[HHH]"
-theme.layout_txt_fairh                          = "[fh]"
-theme.layout_txt_spiral                         = "[@]"
-theme.layout_txt_dwindle                        = "[\\]"
-theme.layout_txt_max                            = "[m]"
-theme.layout_txt_fullscreen                     = "[F]"
-theme.layout_txt_magnifier                      = "[M]"
-theme.layout_txt_floating                       = "><>"
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
 theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
 theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
---[[theme.layout_tile                               = theme.dir .. "/icons/tile.png"
+theme.layout_tile                               = theme.dir .. "/icons/tile.png"
 theme.layout_centerwork                         = theme.dir .. "/icons/centerwork.png"
 theme.layout_tileleft                           = theme.dir .. "/icons/tileleft.png"
 theme.layout_tilebottom                         = theme.dir .. "/icons/tilebottom.png"
@@ -66,8 +54,8 @@ theme.layout_dwindle                            = theme.dir .. "/icons/dwindle.p
 theme.layout_max                                = theme.dir .. "/icons/max.png"
 theme.layout_fullscreen                         = theme.dir .. "/icons/fullscreen.png"
 theme.layout_magnifier                          = theme.dir .. "/icons/magnifier.png"
-theme.layout_floating                           = theme.dir .. "/icons/floating.png"]]--
---theme.widget_ac                                 = theme.dir .. "/icons/ac.png"
+theme.layout_floating                           = theme.dir .. "/icons/floating.png"
+theme.widget_ac                                 = theme.dir .. "/icons/ac.png"
 --theme.widget_battery                            = theme.dir .. "/icons/battery.png"
 --theme.widget_battery_low                        = theme.dir .. "/icons/battery_low.png"
 --theme.widget_battery_empty                      = theme.dir .. "/icons/battery_empty.png"
@@ -107,17 +95,6 @@ theme.titlebar_maximized_button_focus_active    = theme.dir .. "/icons/titlebar/
 theme.titlebar_maximized_button_normal_active   = theme.dir .. "/icons/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
-
--- lain related
-theme.layout_txt_termfair                       = "[termfair]"
-theme.layout_txt_centerwork                     = "[|M|]"
-theme.layout_txt_centerfair                     = "[|M|]"
-
-local function update_txt_layoutbox(s)
-    -- Writes a string representation of the current layout in a textbox widget
-    local txt_l = theme["layout_txt_" .. awful.layout.getname(awful.layout.get(s))] or ""
-    s.mytxtlayoutbox:set_text(txt_l)
-end
 
 local markup = lain.util.markup
 local separators = lain.util.separators
@@ -197,7 +174,7 @@ local cpu = lain.widget.cpu({
 -- Coretemp
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
-    tempfile = "/sys/devices/platform/nct6775.2592/hwmon/hwmon4/temp7_input",                           
+    tempfile = "/sys/devices/platform/nct6775.2592/hwmon/hwmon2/temp7_input",                           
     settings = function()
         widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", " " .. "  " .. coretemp_now .. "°C "))
     end
@@ -284,26 +261,15 @@ function theme.at_screen_connect(s)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
-
-    -- Textual layoutbox
-    s.mytxtlayoutbox = wibox.widget.textbox(theme["layout_txt_" .. awful.layout.getname(awful.layout.get(s))])
-    awful.tag.attached_connect_signal(s, "property::selected", function () update_txt_layoutbox(s) end)
-    awful.tag.attached_connect_signal(s, "property::layout", function () update_txt_layoutbox(s) end)
-    s.mytxtlayoutbox:buttons(my_table.join(
-                           awful.button({}, 1, function() awful.layout.inc(1) end),
-                           awful.button({}, 2, function () awful.layout.set( awful.layout.layouts[1] ) end),
-                           awful.button({}, 3, function() awful.layout.inc(-1) end),
-                           awful.button({}, 4, function() awful.layout.inc(1) end),
-                           awful.button({}, 5, function() awful.layout.inc(-1) end)))
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
-    --[[s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(my_table.join(
                            awful.button({}, 1, function () awful.layout.inc( 1) end),
                            awful.button({}, 2, function () awful.layout.set( awful.layout.layouts[1] ) end),
                            awful.button({}, 3, function () awful.layout.inc(-1) end),
                            awful.button({}, 4, function () awful.layout.inc( 1) end),
-                           awful.button({}, 5, function () awful.layout.inc(-1) end)))]]--
+                           awful.button({}, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
 
@@ -321,13 +287,6 @@ function theme.at_screen_connect(s)
             --awesome_icon,
             --spr,
             s.mytaglist,
-            spr,
-            spr,
-            spr,
-            s.mytxtlayoutbox,
-            spr,
-            spr,
-            spr,
             s.mypromptbox,
             spr,
             spr,
@@ -351,9 +310,8 @@ function theme.at_screen_connect(s)
             arrl_dl,
             clock,
             spr,
-            spr,
-            --arrl_ld,
-            --wibox.container.background(s.mylayoutbox, theme.bg_focus),
+            arrl_ld,
+            wibox.container.background(s.mylayoutbox, theme.bg_focus),
             wibox.widget.systray(theme.bg_focus),
         },
     }

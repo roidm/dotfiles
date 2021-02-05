@@ -1,5 +1,5 @@
 #! /bin/bash 
-picom &
+picom --experimental-backends &
 nitrogen --restore &
 xiccd & 
 notify-osd &

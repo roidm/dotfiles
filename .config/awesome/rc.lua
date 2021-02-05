@@ -22,6 +22,7 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
                       require("awful.hotkeys_popup.keys")
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 local dpi           = require("beautiful.xresources").apply_dpi
+
 -- }}}
 
 -- {{{ Error handling
@@ -84,13 +85,13 @@ local modkey1      = "Control"
 local terminal     = "alacritty"
 local vi_focus     = false -- vi-like client focus - https://github.com/lcpz/awesome-copycats/issues/275
 local cycle_prev   = true -- cycle trough all previous client or just the first -- https://github.com/lcpz/awesome-copycats/issues/274
-local editor       = os.getenv("EDITOR") or "vim"
-local gui_editor   = os.getenv("GUI_EDITOR") or "kate"
+local editor       = os.getenv("EDITOR") or "nvim"
+local gui_editor   = os.getenv("GUI_EDITOR") or "code"
 local browser      = os.getenv("BROWSER") or "firefox"
 local scrlocker    = "slock"
 
 awful.util.terminal = terminal
-awful.util.tagnames = {"   ", "   ", "   ", "   ", "   ", " 嗢  ", "   ", "   "}
+awful.util.tagnames = {"   ", "   ", "   ", "   ", " 﨤  ", " 嗢  ", "   ", "   "}
 awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
@@ -101,9 +102,9 @@ awful.layout.layouts = {
     --awful.layout.suit.fair.horizontal,
     awful.layout.suit.spiral,
     awful.layout.suit.spiral.dwindle,
-    --awful.layout.suit.max,
-    --awful.layout.suit.max.fullscreen,
-    --awful.layout.suit.magnifier,
+    awful.layout.suit.max,
+    awful.layout.suit.max.fullscreen,
+    awful.layout.suit.magnifier,
     --awful.layout.suit.corner.nw,
     --awful.layout.suit.corner.ne,
     --awful.layout.suit.corner.sw,
@@ -129,9 +130,9 @@ awful.util.taglist_buttons = my_table.join(
         if client.focus then
             client.focus:toggle_tag(t)
         end
-    end),
-    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+    end)
+    --awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+    --awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
 )
 
 awful.util.tasklist_buttons = my_table.join(
@@ -239,9 +240,9 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 
 -- {{{ Mouse bindings
 root.buttons(my_table.join(
-    awful.button({ }, 3, function () awful.util.mymainmenu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewnext),
-    awful.button({ }, 5, awful.tag.viewprev)
+    awful.button({ }, 3, function () awful.util.mymainmenu:toggle() end)
+   --awful.button({ }, 4, awful.tag.viewnext),
+    --awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -253,8 +254,8 @@ globalkeys = my_table.join(
               {description = "take a screenshot", group = "hotkeys"}),
 
     -- X screen locker
-    awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
-              {description = "lock screen", group = "hotkeys"}),
+    --awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
+      --        {description = "lock screen", group = "hotkeys"}),
 
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -419,7 +420,7 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
 
     -- Dropdown application
     --awful.key({ modkey, }, "z", function () awful.screen.focused().quake:toggle() end,
-              --{description = "dropdown application", group = "launcher"}),
+      --        {description = "dropdown application", group = "launcher"}),
 
     -- Widgets popups
     awful.key({ altkey, }, "c", function () if beautiful.cal then beautiful.cal.show(7) end end,
@@ -431,7 +432,6 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
 
     
     -- ALSA volume control
-    --awful.key({ modkey1 }, "Up",
     awful.key({ }, "XF86AudioRaiseVolume", function ()
             os.execute("amixer -q -D pulse sset Master 5%+")
         end),
@@ -462,6 +462,9 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
     
     awful.key({ altkey }, "k", function () awful.spawn.with_shell("kate")end,
               {description = "run kate", group = "launcher"}),
+
+    awful.key({ altkey }, "v", function () awful.spawn.with_shell("code")end,
+              {description = "run visual studio code", group = "launcher"}),          
     
     awful.key({ altkey }, "e", function () awful.spawn.with_shell("nemo")end,
               {description = "run nemo", group = "launcher"}),
@@ -471,6 +474,9 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
     
     awful.key({ altkey }, "d", function () awful.spawn.with_shell("gnome-disks")end,
               {description = "run gnome-disk", group = "launcher"}),
+
+
+
 
 
     awful.key({ modkey }, "x",
@@ -519,6 +525,8 @@ clientkeys = my_table.join(
         end ,
         {description = "maximize", group = "client"})
 )
+
+
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
@@ -613,16 +621,41 @@ awful.rules.rules = {
      }
     },
 
+    
     -- Titlebars
     { rule_any = { type = { "dialog", "normal" } },
       properties = { titlebars_enabled = false } },
 
    
-    { rule = { class = "Gimp", role = "gimp-image-window" },
-          properties = { maximized = true } },
-    
-    { rule = { class = "Glimpse", role = "glimpse-image-window" },
-          properties = { floating = true } },
+    -- Floating clients.
+    { rule_any = {
+        instance = {
+          "DTA",  -- Firefox addon DownThemAll.
+          "copyq",  -- Includes session name in class.
+        },
+        class = {
+          "Arandr",
+          "Glimpse",
+          "glimpse",
+          "Gimp",
+          "gimp",
+          "Kruler",
+          "MessageWin",  -- kalarm.
+          "mpv",
+          "Sxiv",
+          "Wpa_gui",
+          "pinentry",
+          "veromix",
+          "xtightvncviewer"},
+
+        name = {
+          "Event Tester",  -- xev.
+        },
+        role = {
+          "AlarmWindow",  -- Thunderbird's calendar.
+          "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
+        }
+      }, properties = { floating = true }},   
 }
 -- }}}
     -- Set Firefox to always map on the first tag on screen 1.
@@ -633,7 +666,7 @@ awful.rules.rules = {
 client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
-    -- if not awesome.startup then awful.client.setslave(c) end
+    if not awesome.startup then awful.client.setslave(c) end
 
     if awesome.startup and
       not c.size_hints.user_position
