@@ -1,0 +1,517 @@
+[global/wm]
+;https://github.com/jaagr/polybar/wiki/Configuration#global-wm-settings
+margin-top = 0
+margin-bottom = 0
+
+[settings]
+;https://github.com/jaagr/polybar/wiki/Configuration#application-settings
+throttle-output = 5
+throttle-output-for = 10
+throttle-input-for = 30
+screenchange-reload = true
+;compositing-background = over
+;compositing-foreground = over
+;compositing-overline = over
+;compositing-underline = over
+;compositing-border = over
+
+; Define fallback values used by all module formats
+format-foreground = #f4f4f4
+format-background = #1e222a
+label-font = 1
+content-font = 1
+format-font = 1
+format-padding = 0
+
+[colors]
+background = #1e222a
+bg3 = #665c54
+foreground = #d8dee9
+foreground-alt = #a4a4a4
+
+
+################################################################################
+################################################################################
+############                  MAINBAR-XMONAD                        ############
+################################################################################
+################################################################################
+[bar/top]
+monitor = DisplayPort-0
+;monitor-fallback = HDMI1
+width = 100%
+height = 32
+;offset-x = 1%
+;offset-y = 1%
+radius = 0.0
+fixed-center = true
+bottom = false
+;monitor-strict = false
+
+wm-restack = bspwm
+override-redirect = true
+
+font-0 = "UbuntuMono Nerd Font:style=bold:size=14;2"
+font-1 = "UbuntuMono Nerd Font:size=28;6"
+font-2 = "Font Awesome 5 Free:style=Regular:pixelsize=14;1"
+font-3 = "Font Awesome 5 Free:style=Solid:pixelsize=14;1"
+font-4 = "UbuntuMono Nerd Font:style=bold:size=16;2"
+font-5 = "UbuntuMono Nerd Font Bold:style=bold:size=14;2"
+font-6 = "UbuntuMono Nerd Font:size=17:type=bold:antialias=true:autohint=true;2"
+font-7 = "UbuntuMono Nerd Font:style=bold:size=15;2"
+font-8 = "UbuntuMono Nerd Font:style=bold:size=16;2"
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 2
+line-color = #f00
+
+
+; Enable support for inter-process messaging
+; See the Messaging wiki page for more details.
+enable-ipc = true
+
+border-size = 0
+;border-left-size = 0
+;border-right-size = 25
+;border-top-size = 0
+;border-bottom-size = 25
+border-color = #00000000
+
+padding-left = 0
+padding-right = 0
+
+module-margin-left = 0
+module-margin-right = 0
+
+modules-left = xmonad 
+;modules-center = kernel
+modules-right = arrow networkspeeddown networkspeedup arrow1 temp1 arrow4 memory2 arrow1 cpu arrow7 pavolume arrow6 date
+
+
+cursor-click = pointer
+
+;tray-detached = false
+;tray-offset-x = 0
+;tray-offset-y = 0
+tray-padding = 0
+tray-maxsize = 20
+tray-scale = 1.0
+tray-position = right
+tray-background = ${colors.background}
+
+[module/xmonad]
+format-padding = 1.5
+;format-font = 1
+;format-foreground = #bbbbbb
+type = custom/script
+exec = xmonad-log
+tail = true
+format-font = 5
+
+[module/ewmh]
+type = internal/xworkspaces
+
+pin-workspaces = false
+enable-click = true
+enable-scroll = false
+reverse-scroll = false
+
+format = <label-state>
+label-monitor = %name%
+
+label-active = %name%
+label-active-foreground = #bc7ad9
+label-active-background = #282c34
+label-active-underline= #282c34
+label-active-padding = 1
+
+label-occupied = %name%
+label-occupied-foreground = #6bb2c0
+label-occupied-background = #282C34
+label-occupied-underline = #282C34
+label-occupied-padding = 1
+
+
+label-urgent = %name%
+label-urgent-foreground = ${colors.foreground}
+label-urgent-background = ${colors.alert}
+label-urgent-underline = ${colors.alert}
+label-urgent-padding = 1
+
+
+label-empty = %name%
+label-empty-padding = 1
+format-font = 9
+
+################################################################################
+###############################################################################
+############                       MODULES ARROWS                     ############
+################################################################################
+################################################################################
+[module/gentoo]
+type = custom/text
+content = "    "
+click-left = dmenu_run -p "Run: "
+format-font = 6
+format-padding = 1
+content-foreground = #f4f4f4
+content-background = #1e222a
+
+[module/arrow]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+label-font = 2
+content-font = 2
+content-foreground = #282C34
+content-background = #1e222a
+
+[module/arrow1]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #1e222a
+content-background = #282C34
+
+[module/arrow2]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #e06c75
+content-background = #b48ead
+
+[module/arrow3]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #b48ead
+content-background = #282C34
+
+[module/arrow4]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #282C34
+content-background = #1e222a
+
+[module/arrow5]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #282C34
+content-background = #1e222a
+
+[module/arrow6]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #1e222a
+content-background = #282C34
+
+[module/arrow7]
+; grey to Blue
+type = custom/text
+content = "%{T2}%{T-}"
+content-font = 2
+content-foreground = #282C34
+content-background = #1e222a
+
+################################################################################
+###############################################################################
+############                       MODULES A-Z                      ############
+################################################################################
+################################################################################
+
+
+###############################################################################
+
+[module/cpu]
+;https://github.com/jaagr/polybar/wiki/Module:-cpu
+type = internal/cpu
+;click-left = alacritty -e htop
+; Seconds to sleep between updates
+; Default: 1
+interval = 1
+format-foreground = #E5C07B
+format-background = #1e222a
+format-font = 8
+format-prefix = " ﬙ "
+format-prefix-foreground = #E5C07B
+
+label-font = 1
+
+; Available tags:
+;   <label> (default)
+;   <bar-load>
+;   <ramp-load>
+;   <ramp-coreload>
+format = <label>
+
+
+; Available tokens:
+;   %percentage% (default) - total cpu load
+;   %percentage-cores% - load percentage for each core
+;   %percentage-core[1-9]% - load percentage for specific core
+label = " %percentage%% "
+
+################################################################################
+
+[module/date]
+label-font = 
+;https://github.com/jaagr/polybar/wiki/Module:-date
+type = internal/date
+; Seconds to sleep between updates
+interval = 5
+; See "http://en.cppreference.com/w/cpp/io/manip/put_time" for details on how to format the date string
+; NOTE: if you want to use syntax tags here you need to use %%{...}
+date-alt = " %d/%m/%y -"
+date = " %a %b %d -"
+time = %H:%M
+time-alt = %H:%M%
+format-font = 8
+format-prefix =" "
+format-prefix-foreground = #98C379
+format-foreground = #98C379
+format-background = #1e222a
+label = "%date% %time% "
+
+#################################################################
+
+[module/kernel]
+type = custom/script
+exec = uname -r
+tail = false
+interval = 1024
+
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+format-prefix = "  "
+format-prefix-foreground = #0084FF
+format-underline = #4B5665
+
+
+
+################################################################################
+
+[module/memory]
+;https://github.com/jaagr/polybar/wiki/Module:-memory
+type = internal/memory
+interval = 5
+; Available tokens:
+;   %percentage_used% (default)
+;   %percentage_free%
+;   %gb_used%
+;   %gb_free%
+;   %gb_total%
+;   %mb_used%
+;   %mb_free%
+;   %mb_total%
+label = " %gb_used% "
+
+format = <label>
+format-font = 8
+format-prefix = " "
+format-prefix-foreground = #d8dee9
+format-foreground = #d8dee9
+format-background = #282C34
+
+[module/memory2]
+type = custom/script
+tail = true
+interval = 5
+#label = "  %output%  "
+exec = ~/.local/bin/memory
+;format = <label>
+format-font = 8
+format-prefix = "  "
+format-prefix-foreground = #C678DD
+format-foreground = #C678DD
+format-background = #282C34
+
+################################################################################
+
+[module/networkspeedup]
+;https://github.com/jaagr/polybar/wiki/Module:-network
+type = internal/network
+;interface = wlp3s0
+;interface = enp14s0
+;interface = enp0s31f6
+interface = enp34s0
+label-connected = "%upspeed:7% "
+format-connected = <label-connected>
+format-font = 9
+format-connected-prefix = " "
+format-connected-prefix-foreground = #E06C75
+format-connected-foreground = #E06C75
+format-connected-background = #282C34
+
+################################################################################
+
+[module/networkspeeddown]
+;https://github.com/jaagr/polybar/wiki/Module:-network
+type = internal/network
+;interface = wlp3s0
+;interface = enp14s0
+;interface = enp0s31f6
+interface = enp34s0
+label-connected = "%downspeed:7% "
+format-connected = <label-connected>
+format-font = 9
+format-connected-prefix = " "
+format-connected-prefix-foreground = #E06C75
+format-connected-foreground = #E06C75
+format-connected-background = #282C34
+
+################################################################################
+
+[module/pavolume]
+type = custom/script
+tail = true
+label = "%output% "
+exec = ~/.config/polybar/scripts/pavolume.sh --listen
+click-right = exec pavucontrol
+click-left = ~/.config/polybar/scripts/pavolume.sh --togmute
+scroll-up = ~/.config/polybar/scripts/pavolume.sh --up
+scroll-down = ~/.config/polybar/scripts/pavolume.sh --down
+format-foreground = #61AFFf
+format-background = #282C34
+
+
+
+#################################################################################
+
+[module/weather]
+type = custom/script
+interval = 10
+format = <label>
+format-prefix = " "
+format-prefix-foreground = #3EC13F
+format-underline = #3EC13F
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+exec = python -u ~/.config/polybar/scripts/weather.py
+tail = true
+
+#################################################################################
+
+[module/wired-network]
+;https://github.com/jaagr/polybar/wiki/Module:-network
+type = internal/network
+interface = enp4s0
+;interface = enp14s0
+interval = 3.0
+
+; Available tokens:
+;   %ifname%    [wireless+wired]
+;   %local_ip%  [wireless+wired]
+;   %essid%     [wireless]
+;   %signal%    [wireless]
+;   %upspeed%   [wireless+wired]
+;   %downspeed% [wireless+wired]
+;   %linkspeed% [wired]
+; Default: %ifname% %local_ip%
+label-connected =  %ifname%
+label-disconnected = %ifname% disconnected
+
+format-connected-foreground = ${colors.foreground}
+format-connected-background = ${colors.background}
+format-connected-underline = #55aa55
+format-connected-prefix = " "
+format-connected-prefix-foreground = #55aa55
+format-connected-prefix-background = ${colors.background}
+
+format-disconnected = <label-disconnected>
+format-disconnected-underline = ${colors.alert}
+label-disconnected-foreground = ${colors.foreground}
+
+################################################################################
+
+[module/wireless-network]
+;https://github.com/jaagr/polybar/wiki/Module:-network
+type = internal/network
+interface = ${env:WIRELESS}
+interval = 3.0
+label-connected = %essid%
+
+format-connected = <label-connected>
+;format-connected = <ramp-signal> <label-connected>
+format-connected-foreground = ${colors.foreground}
+format-connected-background = ${colors.background}
+format-connected-prefix = "  "
+format-connected-prefix-foreground = #7e52c6
+format-connected-prefix-background = ${colors.background}
+format-connected-underline = #7e52c6
+
+label-disconnected = %ifname% disconnected
+label-disconnected-foreground = ${colors.alert}
+label-disconnected-background = ${colors.background}
+
+format-disconnected = <label-disconnected>
+format-disconnected-foreground = ${colors.alert}
+format-disconnected-background = ${colors.background}
+format-disconnected-prefix = "  "
+format-disconnected-prefix-foreground = ${colors.alert}
+format-disconnected-prefix-background = ${colors.background}
+format-disconnected-underline =${colors.alert}
+
+ramp-signal-0 = ▁
+ramp-signal-1 = ▂
+ramp-signal-2 = ▃
+ramp-signal-3 = ▄
+ramp-signal-4 = ▅
+ramp-signal-5 = ▆
+ramp-signal-6 = ▇
+ramp-signal-7 = █
+ramp-signal-foreground = #7e52c6
+
+
+[module/xwindow]
+;https://github.com/jaagr/polybar/wiki/Module:-xwindow
+type = internal/xwindow
+
+; Available tokens:
+;   %title%
+; Default: %title%
+label = %title%
+format-padding = 2
+label-maxlen = 60
+format-font = 8
+format-foreground = #98C379
+format-background = ${colors.background}
+
+[module/temp1]
+;https://github.com/jaagr/polybar/wiki/Module:-temperature
+type = internal/temperature
+thermal-zone = 0
+
+hwmon-path = /sys/devices/platform/nct6775.2592/hwmon/hwmon3/temp7_input
+warn-temperature = 70
+format = <ramp> <label>
+format-foreground = #56B6C2
+format-prefix-foreground = #56B6C2
+format-background = #1e222a
+;format-underline = #d8dee9
+format-warn = <ramp> <label-warn>
+;format-warn-underline = #d8dee9
+label = "%temperature% "
+label-foreground = #56B6C2
+label-warn = "  %temperature% "
+label-warn-foreground = #56B6C2
+format-label-font = 1
+ramp-0 = 﨎
+ramp-1 = 﨎
+ramp-2 = 﨎
+ramp-3 = 﨎
+ramp-4 = 﨎
+ramp-foreground = #56B6C2
+format-font = 1
+
+###############################################################################
+# vim:ft=dosini
