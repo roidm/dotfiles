@@ -36,10 +36,10 @@ import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat, isDialog, doCenter
 import XMonad.Hooks.ServerMode
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WorkspaceHistory
-import XMonad.Hooks.InsertPosition
-import XMonad.Hooks.InsertPosition as H
+import XMonad.Hooks.InsertPosition (Position(End), Focus(Newer), insertPosition)
 
     -- Layouts
+import XMonad.Layout.Gaps    
 import XMonad.Layout.Accordion
 import XMonad.Layout.GridVariants (Grid(Grid))
 import XMonad.Layout.SimplestFloat
@@ -126,7 +126,7 @@ myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  ,NS "ranger" spawnRngr findRngr manageRngr
                  ,NS "vlc" spawnVlc findVlc manageVlc
-                ]
+                ]              
   where
     spawnTerm  = myTerm2 ++ " -n scratchpad"
     findTerm   = resource =? "scratchpad"
@@ -199,6 +199,13 @@ threeColMid = renamed [Replace "|C|"]
 floats   = renamed [Replace "><>"]
            $ limitWindows 20 simplestFloat
                      
+gap :: Int
+gap = 15
+
+fi = fromIntegral
+
+mrt = mouseResizableTile { draggerType = FixedDragger (fi gap) (fi gap) }
+applyGaps = gaps $ zip [U, D, R, L] $ repeat gap
 
 -- The layout hook
 myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats
@@ -211,7 +218,7 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
                                  ||| threeCol
                                  ||| threeColMid
                                  ||| floats
-                                 ||| mouseResizableTile { masterFrac = 0.5, fracIncrement = 0.05, draggerType = (FixedDragger 6 6)}
+                                 ||| avoidStruts (applyGaps mrt)
                                  --{ masterFrac = 0.5, fracIncrement = 0.05, draggerType = FixedDragger}
 
 
@@ -228,17 +235,18 @@ clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
 ------------------------------------------------------------------------
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = (isDialog --> doF W.swapUp)                       -- Bring Dialog Window on Top of Parent Floating Window
-               <+> insertPosition Below Newer                    -- Insert New Windows at the Bottom of Stack Area
-               <+> namedScratchpadManageHook myScratchPads       -- Adding Rules for Named Scratchpads
                <+> composeAll
-               [ (className =? "firefox" <&&> title =? "Library") --> doCenterFloat    -- Float Firefox Downloads Window to Centre
+               [ manageDocks
+               , (className =? "firefox" <&&> title =? "Library") --> doCenterFloat    -- Float Firefox Downloads Window to Centre
                , (className =? "gcolor3")        --> doCenterFloat
                , (className =? "Gcolor3")        --> doCenterFloat
                , (className =? "mpv")            --> doCenterFloat
                , (className =? "Lxappearance")   --> doCenterFloat                     -- Float Lxappearance to Centre
                , (resource  =? "kdesktop")       --> doIgnore
                , (resource  =? "desktop_window") --> doIgnore
-               , isDialog --> doCenterFloat                                            -- Float Dialog Windows to Centre
+               , isDialog --> doCenterFloat
+               , namedScratchpadManageHook myScratchPads     
+               , insertPosition End Newer  
                ]
 
 myKeys :: [(String, X ())]
@@ -333,8 +341,8 @@ myKeys =
         , ("<Print>", spawn "screenshot")
         ]
     -- The following lines are needed for named scratchpads.
-          where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
-                nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
+         where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
+               nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
 
 
 --Process Colours
@@ -349,6 +357,7 @@ colourTitle   = "#9ec07c"
 colourLyt     = "#c678dd"
 colourSep     = "#4b5363"
 colourHiNoWin = "#d6d5d5"
+colourUrgent  = "#e06c75"
 colourBG      = "#282c34"
 
 ----------------------------------------------
@@ -358,15 +367,16 @@ myLogHook dbus =
   let signal     = D.signal (D.objectPath_ "/org/xmonad/Log") (D.interfaceName_ "org.xmonad.Log") (D.memberName_ "Update")
       output str = D.emit dbus $ signal { D.signalBody = [D.toVariant $ UTF8.decodeString str] }
   in dynamicLogWithPP $ def
-    { ppOutput = output
-    , ppCurrent = polybarColour 'F' colourCurrent 
-    , ppVisible = polybarColour 'F' colourVisible
+    { ppOutput  = output
+    , ppCurrent = polybarColour 'F' colourCurrent . wrap "[" "]"
+    , ppVisible = polybarColour 'F' colourVisible 
     , ppLayout  = polybarColour 'F' colourLyt . removeWord "Hinted" . removeWord "Spacing"
-    , ppHidden  = polybarColour 'F' colourHidden . noScratchPad
+    , ppHidden  = polybarColour 'F' colourHidden . wrap "*" "" . noScratchPad
     , ppHiddenNoWindows = polybarColour 'F' colourHiNoWin . noScratchPad
     , ppWsSep   = "  "
     , ppSep     = polybarColour 'F' colourSep  " | "
     , ppTitle   = polybarColour 'F' colourTitle . shorten 60
+    , ppUrgent  = polybarColour 'F' colourTitle . wrap "!" "!"  -- Urgent workspace
     , ppExtras  = [windowCount]
     , ppOrder   = \(ws:l:t:ex) -> [ws,l]++ex++[t]
     }
@@ -386,7 +396,7 @@ main = do
 
     -- the xmonad, ya know...what the WM is named after!
     xmonad $ ewmh desktopConfig
-        { manageHook = myManageHook <+> manageDocks
+        { manageHook         = myManageHook 
         , modMask            = myModMask
         , terminal           = myTerminal
         , startupHook        = myStartupHook
