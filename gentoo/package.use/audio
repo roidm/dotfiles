@@ -1,0 +1,7 @@
+>=net-wireless/wpa_supplicant-2.9-r2 dbus
+# required by media-sound/pulseaudio-13.0-r1::gentoo[alsa,alsa-plugin]
+# required by pulseaudio (argument)
+>=media-plugins/alsa-plugins-1.2.2 pulseaudio
+media-sound/pulseaudio bluetooth gtk  dbus
+# required by x11-libs/gtk+-3.24.24-r1::gentoo
+# required by x11-themes/adwaita-icon-theme-3.36.1-r1::gentoo

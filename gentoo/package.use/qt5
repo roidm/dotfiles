@@ -1,0 +1,14 @@
+# required by dev-qt/qtcore-5.15.2-r2::gentoo
+# required by dev-qt/qtdbus-5.15.2::gentoo
+# required by x11-themes/adwaita-qt-1.2.0::gentoo
+# required by x11-themes/QGnomePlatform-0.7.0::gentoo
+# required by QGnomePlatform (argument)
+>=dev-libs/libpcre2-10.36-r1 pcre16
+# required by dev-qt/qtwidgets-5.15.2::gentoo[gtk]
+# required by dev-qt/qtdeclarative-5.15.2::gentoo[widgets]
+# required by dev-qt/qtwayland-5.15.2-r1::gentoo
+# required by x11-themes/QGnomePlatform-0.7.0::gentoo
+# required by QGnomePlatform (argument)
+>=dev-qt/qtgui-5.15.2-r1 egl dbus
+>=sys-libs/zlib-1.2.11-r3 minizip
+

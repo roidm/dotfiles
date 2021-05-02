@@ -1,0 +1,101 @@
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/minitest-5.14.3 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/power_assert-1.2.0 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/rake-13.0.3-r1 ruby_targets_ruby30
+# required by dev-ruby/typeprof-0.12.0::gentoo[ruby_targets_ruby30]
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/rbs-1.0.4 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/rexml-3.2.4 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/rss-0.2.9 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/test-unit-3.4.0 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/typeprof-0.12.0 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+>=dev-ruby/bundler-2.2.8 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/did_you_mean-1.5.0 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/json-2.5.1-r1 ruby_targets_ruby30
+# required by dev-lang/ruby-3.0.0-r1::gentoo[rdoc]
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+>=dev-ruby/rdoc-6.3.0 ruby_targets_ruby30
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+>=dev-ruby/kpeg-1.1.0-r1 ruby_targets_ruby30
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rubygems-3.2.7::gentoo[ruby_targets_ruby30]
+# required by virtual/rubygems-16::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/kpeg-1.1.0-r1::gentoo[-test,ruby_targets_ruby30]
+>=dev-ruby/racc-1.5.2-r1 ruby_targets_ruby30
+# required by dev-ruby/rdoc-6.3.0::gentoo[-test,ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+>=virtual/rubygems-16 ruby_targets_ruby30
+# required by virtual/rubygems-16::gentoo[ruby_targets_ruby30]
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by virtual/ruby-ssl-11::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+>=dev-ruby/rubygems-3.2.7 ruby_targets_ruby30
+# required by dev-ruby/racc-1.5.2-r1::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/rdoc-6.3.0::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/bundler-2.2.8::gentoo[doc,ruby_targets_ruby30]
+# required by dev-lang/ruby-3.0.0-r1::gentoo
+# required by dev-ruby/rubygems-3.2.7::gentoo[ruby_targets_ruby30]
+# required by virtual/rubygems-16::gentoo[ruby_targets_ruby30]
+# required by dev-ruby/kpeg-1.1.0-r1::gentoo[-test,ruby_targets_ruby30]
+>=virtual/ruby-ssl-11 ruby_targets_ruby30

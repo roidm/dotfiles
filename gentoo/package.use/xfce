@@ -1,0 +1,5 @@
+# required by xfce-base/xfce4-panel-4.16.1::gentoo[dbusmenu]
+# required by xfce-base/thunar-4.17.0::gentoo[trash-panel-plugin]
+# required by xfce-extra/thunar-volman-4.16.0::gentoo
+# required by thunar-volman (argument)
+>=dev-libs/libdbusmenu-16.04.0-r1 gtk3

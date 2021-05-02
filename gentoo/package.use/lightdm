@@ -1,0 +1,3 @@
+>=x11-misc/lightdm-1.30.0-r2 vala
+media-libs/libcanberra udev  pulseaudio alsa  gstreamer
+lxde-base/lxappearance dbus

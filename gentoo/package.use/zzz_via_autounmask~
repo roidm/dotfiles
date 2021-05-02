@@ -1,0 +1,16 @@
+media-video/ffmpeg vaapi libdrm pulseaudio vdpau webp xvid vpx openh264 vorbis
+x11-libs/libva vdpau
+media-video/mpv vaapi
+www-client/firefox pulseaudio dbus hwaccel
+media-libs/libpng apng
+media-libs/libvpx postproc
+dev-lang/python sqlite
+sys-devel/gcc lto,zstd zstd lto vtv
+media-video/obs-studio pulseaudio imagemagick
+dev-qt/qtmultimedia pulseaudio alsa
+www-client/w3m fbcon -gdk-pixbuf
+sys-kernel/gentoo-kernel -initramfs
+gnome-base/gvfs mtp
+sys-auth/polkit duktape
+media-gfx/sxiv gif exif
+x11-misc/xmobar xft iwlib dbus xpm alsa timezone mpris
