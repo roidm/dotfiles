@@ -40,7 +40,6 @@ import XMonad.Hooks.InsertPosition (Position(End), Focus(Newer), insertPosition)
 
     -- Layouts
 import XMonad.Layout.Gaps    
-import XMonad.Layout.Accordion
 import XMonad.Layout.GridVariants (Grid(Grid))
 import XMonad.Layout.SimplestFloat
 import XMonad.Layout.BinarySpacePartition
@@ -126,7 +125,7 @@ myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  ,NS "ranger" spawnRngr findRngr manageRngr
                  ,NS "vlc" spawnVlc findVlc manageVlc
-                ]              
+                ]
   where
     spawnTerm  = myTerm2 ++ " -n scratchpad"
     findTerm   = resource =? "scratchpad"
@@ -170,6 +169,9 @@ mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 mySpacing' :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
+-- Defining a bunch of layouts, many that I don't use.
+-- limitWindows n sets maximum number of windows displayed for layout.
+-- mySpacing n sets the gap size around the windows.
 -- Defining a bunch of layouts, many that I don't use.
 -- limitWindows n sets maximum number of windows displayed for layout.
 -- mySpacing n sets the gap size around the windows.
@@ -219,12 +221,9 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
                                  ||| threeColMid
                                  ||| floats
                                  ||| avoidStruts (applyGaps mrt)
-                                 --{ masterFrac = 0.5, fracIncrement = 0.05, draggerType = FixedDragger}
-
 
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
---myWorkspaces = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
 myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
 
 clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
@@ -238,9 +237,10 @@ myManageHook = (isDialog --> doF W.swapUp)                       -- Bring Dialog
                <+> composeAll
                [ manageDocks
                , (className =? "firefox" <&&> title =? "Library") --> doCenterFloat    -- Float Firefox Downloads Window to Centre
-               , (className =? "gcolor3")        --> doCenterFloat
-               , (className =? "Gcolor3")        --> doCenterFloat
+               , (className =? "gcolor2")        --> doCenterFloat
+               , (className =? "Gcolor2")        --> doCenterFloat
                , (className =? "mpv")            --> doCenterFloat
+               , (className =? "obs")            --> doCenterFloat
                , (className =? "Lxappearance")   --> doCenterFloat                     -- Float Lxappearance to Centre
                , (resource  =? "kdesktop")       --> doIgnore
                , (resource  =? "desktop_window") --> doIgnore
@@ -327,7 +327,7 @@ myKeys =
         , ("M1-d", spawn "gnome-disks")
         , ("M1-e", spawn "thunar")
         , ("M1-g", spawn "gthumb")
-        , ("M1-m", spawn "gnome-system-monitor")
+        , ("M1-m", spawn "xfce4-taskmanager")
         , ("M1-v", spawn "code")
 
     -- Multimedia Keys
@@ -341,11 +341,69 @@ myKeys =
         , ("<Print>", spawn "screenshot")
         ]
     -- The following lines are needed for named scratchpads.
-         where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
-               nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
+          where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
+                nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
 
 
---Process Colours
+
+main :: IO ()
+main = do
+
+    --Polybar
+    dbus <- D.connectSession
+    -- Request access to the DBus name
+    D.requestName dbus (D.busName_ "org.xmonad.Log") [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+
+    -- the xmonad, ya know...what the WM is named after!
+    xmonad $ ewmh desktopConfig
+        { manageHook = myManageHook <+> manageDocks
+        , modMask            = myModMask
+        , terminal           = myTerminal
+        , startupHook        = myStartupHook
+        , layoutHook         = myLayoutHook
+        , workspaces         = myWorkspaces
+        , borderWidth        = myBorderWidth
+        , normalBorderColor  = myNormColor
+        , focusedBorderColor = myFocusColor
+        , logHook = dynamicLogWithPP (polybarPP dbus)
+        } `additionalKeysP` myKeys
+
+polybarPP :: D.Client -> PP
+polybarPP dbus = namedScratchpadFilterOutWorkspacePP $ def
+  { ppOutput  = dbusOutput dbus
+  , ppCurrent = polybarColour 'F' colourCurrent . wrap "[" "]"
+  , ppVisible = polybarColour 'F' colourVisible
+  , ppUrgent  = polybarColour 'F' colourTitle . wrap "!" "!"
+  , ppLayout  = polybarColour 'F' colourLyt . removeWord "Hinted" . removeWord "Spacing"
+  , ppHidden  = polybarColour 'F' colourHidden . wrap "*" "" . unwords . map wrapOpenWorkspaceCmd . words
+  , ppHiddenNoWindows = polybarColour 'F' colourHiNoWin . unwords . map wrapOpenWorkspaceCmd . words
+  , ppWsSep   = "  "
+  , ppSep     = polybarColour 'F' colourSep  " | "
+  , ppExtras  = [windowCount]
+  , ppTitle   = polybarColour 'F' colourTitle . shorten 60
+  , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t] 
+  }
+    where
+      -- then define it down here: if the workspace is NSP then print
+      -- nothing, else print it as-is  
+      removeWord substr = unwords . filter (/= substr) . words  
+      wrapOpenWorkspaceCmd wsp 
+        | all isDigit wsp = wrapOnClickCmd ("xdotool key super+" ++ wsp) wsp
+        | otherwise = wsp
+      wrapOnClickCmd cmd = wrap ("%{A1:" ++ cmd ++ ":}") "%{A}"
+
+dbusOutput :: D.Client -> String -> IO ()
+dbusOutput dbus str = do
+    let signal = (D.signal objectPath interfaceName memberName) {
+            D.signalBody = [D.toVariant $ UTF8.decodeString str]
+        }
+    D.emit dbus signal
+  where
+    objectPath = D.objectPath_ "/org/xmonad/Log"
+    interfaceName = D.interfaceName_ "org.xmonad.Log"
+    memberName = D.memberName_ "Update"
+
+ --Process Colours
 type Colour = String
 polybarColour :: Char -> Colour -> String -> String
 polybarColour area (_:color) text = "%{" ++ [area] ++ color ++ "}" ++ text ++ "%{" ++ area:"--}"
@@ -358,52 +416,4 @@ colourLyt     = "#c678dd"
 colourSep     = "#4b5363"
 colourHiNoWin = "#d6d5d5"
 colourUrgent  = "#e06c75"
-colourBG      = "#282c34"
-
-----------------------------------------------
---Polybar dbus myLogHook
-----------------------------------------------
-myLogHook dbus =
-  let signal     = D.signal (D.objectPath_ "/org/xmonad/Log") (D.interfaceName_ "org.xmonad.Log") (D.memberName_ "Update")
-      output str = D.emit dbus $ signal { D.signalBody = [D.toVariant $ UTF8.decodeString str] }
-  in dynamicLogWithPP $ def
-    { ppOutput  = output
-    , ppCurrent = polybarColour 'F' colourCurrent . wrap "[" "]"
-    , ppVisible = polybarColour 'F' colourVisible 
-    , ppLayout  = polybarColour 'F' colourLyt . removeWord "Hinted" . removeWord "Spacing"
-    , ppHidden  = polybarColour 'F' colourHidden . wrap "*" "" . noScratchPad
-    , ppHiddenNoWindows = polybarColour 'F' colourHiNoWin . noScratchPad
-    , ppWsSep   = "  "
-    , ppSep     = polybarColour 'F' colourSep  " | "
-    , ppTitle   = polybarColour 'F' colourTitle . shorten 60
-    , ppUrgent  = polybarColour 'F' colourTitle . wrap "!" "!"  -- Urgent workspace
-    , ppExtras  = [windowCount]
-    , ppOrder   = \(ws:l:t:ex) -> [ws,l]++ex++[t]
-    }
-    where
-    -- then define it down here: if the workspace is NSP then print
-    -- nothing, else print it as-is
-    removeWord substr = unwords . filter (/= substr) . words
-    noScratchPad ws = if ws == "NSP" then "" else ws
-
-main :: IO ()
-main = do
-
-    --Polybar
-    dbus <- D.connectSession
-    -- Request access to the DBus name
-    D.requestName dbus (D.busName_ "org.xmonad.Log") [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
-
-    -- the xmonad, ya know...what the WM is named after!
-    xmonad $ ewmh desktopConfig
-        { manageHook         = myManageHook 
-        , modMask            = myModMask
-        , terminal           = myTerminal
-        , startupHook        = myStartupHook
-        , layoutHook         = myLayoutHook
-        , workspaces         = myWorkspaces
-        , borderWidth        = myBorderWidth
-        , normalBorderColor  = myNormColor
-        , focusedBorderColor = myFocusColor
-        , logHook = myLogHook dbus
-        } `additionalKeysP` myKeys
+colourBG      = "#282c34"   
