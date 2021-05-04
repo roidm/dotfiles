@@ -39,7 +39,7 @@ import XMonad.Hooks.WorkspaceHistory
 import XMonad.Hooks.InsertPosition (Position(End), Focus(Newer), insertPosition)
 
     -- Layouts
-import XMonad.Layout.Gaps    
+import XMonad.Layout.Gaps
 import XMonad.Layout.GridVariants (Grid(Grid))
 import XMonad.Layout.SimplestFloat
 import XMonad.Layout.BinarySpacePartition
@@ -72,14 +72,14 @@ import XMonad.Util.SpawnOnce
 myFont :: String
 myFont = "xft:UbuntuMono Nerd Font:regular:size=12:antialias=true:hinting=true"
 
-myEmojiFont :: String
-myEmojiFont = "xft:JoyPixels:regular:size=12:antialias=true:hinting=true"
-
 myModMask :: KeyMask
-myModMask = mod4Mask        -- Sets modkey to super/windows key
+myModMask = mod4Mask        -- modkey to super/windows key
+
+altMask :: KeyMask
+altMask = mod1Mask
 
 myTerminal :: String
-myTerminal = "alacritty"    -- Sets default terminal
+myTerminal = "alacritty"    -- default terminal
 
 myTerm2 :: String
 myTerm2 = "st"
@@ -87,14 +87,14 @@ myTerm2 = "st"
 myvlc :: String
 myvlc = "vlc"
 
-mytrm :: String
-mytrm = "trm"
+myTelegram :: String
+myTelegram = "Telegram"
 
 myBrowser :: String
 myBrowser = "firefox"
 
 myEditor :: String
-myEditor = myTerminal ++ " -e nvim "    -- Sets vim as editor
+myEditor = myTerminal ++ " -e nvim "  -- nvim as editor
 
 myBorderWidth :: Dimension
 myBorderWidth = 4           -- Sets border width for windows
@@ -104,9 +104,6 @@ myNormColor   = "#282c34"   -- Border color of normal windows
 
 myFocusColor :: String
 myFocusColor  = "#4d78cc"   -- Border color of focused windows
-
-altMask :: KeyMask
-altMask = mod1Mask          -- Setting this for use in xprompts
 
 windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
@@ -125,6 +122,7 @@ myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  ,NS "ranger" spawnRngr findRngr manageRngr
                  ,NS "vlc" spawnVlc findVlc manageVlc
+                 ,NS "Telegram" spawnTgrm findTgrm manageTgrm
                 ]
   where
     spawnTerm  = myTerm2 ++ " -n scratchpad"
@@ -151,38 +149,29 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  w = 0.5
                  t = 0.75 -h
                  l = 0.75 -w
-    spawnTrm  = mytrm
-    findTrm  = resource =? "trm"
-    manageTrm = customFloating $ W.RationalRect l t w h
+    spawnTgrm  = myTelegram
+    findTgrm  = resource =? "Telegram"
+    manageTgrm = customFloating $ W.RationalRect l t w h
                where
                  h = 0.5
                  w = 0.5
                  t = 0.75 -h
-                 l = 0.75 -w             
+                 l = 0.75 -w
 
---Makes setting the spacingRaw simpler to write. The spacingRaw module adds a configurable amount of space around windows.
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
--- Below is a variation of the above except no borders are applied
--- if fewer than two windows. So a single window has no gaps.
 mySpacing' :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
--- Defining a bunch of layouts, many that I don't use.
--- limitWindows n sets maximum number of windows displayed for layout.
--- mySpacing n sets the gap size around the windows.
--- Defining a bunch of layouts, many that I don't use.
--- limitWindows n sets maximum number of windows displayed for layout.
--- mySpacing n sets the gap size around the windows.
 tall     = renamed [Replace "tall"]
            $ limitWindows 12
            $ mySpacing 6
            $ ResizableTall 1 (1/100) (1/2) []
-bsp        = renamed [Replace "bsp"] 
+bsp        = renamed [Replace "bsp"]
            $ limitWindows 12
            $ mySpacing 6
-           $ emptyBSP 
+           $ emptyBSP
 monocle  = renamed [Replace "[M]"]
            $ limitWindows 20 Full
 grid     = renamed [Replace "HHH"]
@@ -200,7 +189,7 @@ threeColMid = renamed [Replace "|C|"]
            $ ThreeColMid 1 (1/100) (1/2)
 floats   = renamed [Replace "><>"]
            $ limitWindows 20 simplestFloat
-                     
+
 gap :: Int
 gap = 15
 
@@ -209,7 +198,7 @@ fi = fromIntegral
 mrt = mouseResizableTile { draggerType = FixedDragger (fi gap) (fi gap) }
 applyGaps = gaps $ zip [U, D, R, L] $ repeat gap
 
--- The layout hook
+-- Layout hook
 myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
              where
@@ -224,7 +213,7 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
 
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
+myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..]
 
 clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
     where i = fromJust $ M.lookup ws myWorkspaceIndices
@@ -233,56 +222,56 @@ clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
 -- MANAGEHOOK
 ------------------------------------------------------------------------
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
-myManageHook = (isDialog --> doF W.swapUp)                       -- Bring Dialog Window on Top of Parent Floating Window
+myManageHook = (isDialog --> doF W.swapUp)
                <+> composeAll
                [ manageDocks
-               , (className =? "firefox" <&&> title =? "Library") --> doCenterFloat    -- Float Firefox Downloads Window to Centre
-               , (className =? "gcolor2")        --> doCenterFloat
-               , (className =? "Gcolor2")        --> doCenterFloat
+               , (className =? "firefox" <&&> title =? "Library") --> doCenterFloat
+               , (className =? "gcolor3")        --> doCenterFloat
+               , (className =? "Gcolor3")        --> doCenterFloat
                , (className =? "mpv")            --> doCenterFloat
                , (className =? "obs")            --> doCenterFloat
-               , (className =? "Lxappearance")   --> doCenterFloat                     -- Float Lxappearance to Centre
+               , (className =? "Lxappearance")   --> doCenterFloat
                , (resource  =? "kdesktop")       --> doIgnore
                , (resource  =? "desktop_window") --> doIgnore
                , isDialog --> doCenterFloat
-               , namedScratchpadManageHook myScratchPads     
-               , insertPosition End Newer  
+               , namedScratchpadManageHook myScratchPads
+               , insertPosition End Newer
                ]
 
 myKeys :: [(String, X ())]
 myKeys =
-    -- Xmonad
+    --  Xmonad
         [ ("M-C-r", spawn "xmonad --recompile")  -- Recompiles xmonad
         , ("M-S-r", spawn "xmonad --restart")    -- Restarts xmonad
         , ("M-S-q", io exitSuccess)              -- Quits xmonad
 
-    -- Useful programs to have a keybinding for launch
+    --  Term, Browser, Htop
         , ("M-<Return>", spawn (myTerminal))
         , ("M-b", spawn (myBrowser))
         , ("M-M1-h", spawn (myTerminal ++ " -e htop"))
 
-    -- Kill windows
+    --  Kill windows
         , ("M-q", kill1)     -- Kill the currently focused client
         , ("M-S-a", killAll)   -- Kill all windows on current workspace
 
-    -- Workspaces
+    --  Workspaces
         , ("M-.", nextScreen)  -- Switch focus to next monitor
         , ("M-,", prevScreen)  -- Switch focus to prev monitor
         , ("M-S-<KP_Add>", shiftTo Next nonNSP >> moveTo Next nonNSP)       -- Shifts focused window to next ws
         , ("M-S-<KP_Subtract>", shiftTo Prev nonNSP >> moveTo Prev nonNSP)  -- Shifts focused window to prev ws
 
-    -- Floating windows
+    --  Floating
         , ("M-f", sendMessage (T.Toggle "floats")) -- Toggles my 'floats' layout
         , ("M-t", withFocused $ windows . W.sink)  -- Push floating window back to tile
         , ("M-S-t", sinkAll)                       -- Push ALL floating windows to tile
 
-    -- Increase/decrease spacing (gaps)
+    --  Increase/decrease (gaps)
         , ("M-d", decWindowSpacing 4)           -- Decrease window spacing
         , ("M-i", incWindowSpacing 4)           -- Increase window spacing
         , ("M-S-d", decScreenSpacing 4)         -- Decrease screen spacing
         , ("M-S-i", incScreenSpacing 4)         -- Increase screen spacing
 
-    -- Windows navigation
+    --  Navigation
         , ("M-m", windows W.focusMaster)  -- Move focus to the master window
         , ("M-j", windows W.focusDown)    -- Move focus to the next window
         , ("M-k", windows W.focusUp)      -- Move focus to the prev window
@@ -294,7 +283,7 @@ myKeys =
         , ("M-C-<Tab>", rotAllDown)       -- Rotate all the windows in the current stack
 
     -- Layouts
-        , ("M-<Tab>", sendMessage NextLayout)           -- Switch to next layout
+        , ("M-<Tab>", sendMessage NextLayout)           -- next layout
         , ("M-C-M1-<Up>", sendMessage Arrange)
         , ("M-C-M1-<Down>", sendMessage DeArrange)
         , ("M-S-<Space>", sendMessage ToggleStruts)     -- Toggles struts
@@ -308,26 +297,26 @@ myKeys =
         , ("M-C-<Down>", decreaseLimit)                 -- Decrease # of windows
 
     -- Window resizing
-        , ("M-h", sendMessage Shrink)                   -- Shrink horiz window width
-        , ("M-l", sendMessage Expand)                   -- Expand horiz window width
-        , ("M-M1-j", sendMessage MirrorShrink)          -- Shrink vert window width
-        , ("M-M1-k", sendMessage MirrorExpand)          -- Exoand vert window width
+        , ("M-h", sendMessage Shrink)                   -- Shrink horiz
+        , ("M-l", sendMessage Expand)                   -- Expand horiz
+        , ("M-M1-j", sendMessage MirrorShrink)          -- Shrink vert
+        , ("M-M1-k", sendMessage MirrorExpand)          -- Exoand vert
 
-    ---- Rofi and Dmenu Scripts
+    --  Rofi and Dmenu Scripts
         , ("C-<Space>", spawn "rofi -show drun")
         , ("M1-<Space>", spawn "dmenu_run")
 
-    -- Scratchpads
+    --  Scratchpads
         , ("M1-t", namedScratchpadAction myScratchPads "terminal")
         , ("M1-u", namedScratchpadAction myScratchPads "ranger")
         , ("M1-o", namedScratchpadAction myScratchPads "vlc")
-        , ("M1-y", namedScratchpadAction myScratchPads "trm")
+        , ("M1-y", namedScratchpadAction myScratchPads "Telegram")
 
-    --- My Applications
+    --- Apps
         , ("M1-d", spawn "gnome-disks")
         , ("M1-e", spawn "thunar")
         , ("M1-g", spawn "gthumb")
-        , ("M1-m", spawn "xfce4-taskmanager")
+        , ("M1-m", spawn "gnome-system-monitor")
         , ("M1-v", spawn "code")
 
     -- Multimedia Keys
@@ -340,7 +329,6 @@ myKeys =
         , ("<XF86HomePage>", spawn "firefox")
         , ("<Print>", spawn "screenshot")
         ]
-    -- The following lines are needed for named scratchpads.
           where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
                 nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
 
@@ -354,7 +342,6 @@ main = do
     -- Request access to the DBus name
     D.requestName dbus (D.busName_ "org.xmonad.Log") [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
 
-    -- the xmonad, ya know...what the WM is named after!
     xmonad $ ewmh desktopConfig
         { manageHook = myManageHook <+> manageDocks
         , modMask            = myModMask
@@ -374,20 +361,22 @@ polybarPP dbus = namedScratchpadFilterOutWorkspacePP $ def
   , ppCurrent = polybarColour 'F' colourCurrent . wrap "[" "]"
   , ppVisible = polybarColour 'F' colourVisible
   , ppUrgent  = polybarColour 'F' colourTitle . wrap "!" "!"
-  , ppLayout  = polybarColour 'F' colourLyt . removeWord "Hinted" . removeWord "Spacing"
   , ppHidden  = polybarColour 'F' colourHidden . wrap "*" "" . unwords . map wrapOpenWorkspaceCmd . words
   , ppHiddenNoWindows = polybarColour 'F' colourHiNoWin . unwords . map wrapOpenWorkspaceCmd . words
   , ppWsSep   = "  "
   , ppSep     = polybarColour 'F' colourSep  " | "
   , ppExtras  = [windowCount]
   , ppTitle   = polybarColour 'F' colourTitle . shorten 60
-  , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t] 
+  , ppOrder   = \(ws:l:t:ex) -> [ws,l]++ex++[t]
+  , ppLayout  = polybarColour 'F' colourLyt . removeWord "Hinted" . removeWord "Spacing" .
+      ( \t -> case t of
+          "MouseResizableTile" -> "MRT"
+          _ -> t
+      )
   }
     where
-      -- then define it down here: if the workspace is NSP then print
-      -- nothing, else print it as-is  
-      removeWord substr = unwords . filter (/= substr) . words  
-      wrapOpenWorkspaceCmd wsp 
+      removeWord substr = unwords . filter (/= substr) . words
+      wrapOpenWorkspaceCmd wsp
         | all isDigit wsp = wrapOnClickCmd ("xdotool key super+" ++ wsp) wsp
         | otherwise = wsp
       wrapOnClickCmd cmd = wrap ("%{A1:" ++ cmd ++ ":}") "%{A}"
@@ -416,4 +405,4 @@ colourLyt     = "#c678dd"
 colourSep     = "#4b5363"
 colourHiNoWin = "#d6d5d5"
 colourUrgent  = "#e06c75"
-colourBG      = "#282c34"   
+colourBG      = "#282c34"
