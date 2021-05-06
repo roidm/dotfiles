@@ -1,10 +1,11 @@
+!-- Xft settings -- !
 Xcursor.theme: Adwaita
 
 Xft.dpi: 125
 Xft.antialias: true
 Xft.hinting: true
 Xft.rgba: rgb
-Xft.autohint: true
+Xft.autohint: false
 Xft.hintstyle: hintSlight
 Xft.lcdfilter: lcdfilter
 
@@ -59,123 +60,60 @@ URxvt.keysym.M-c: perl:clipboard:copy
 URxvt.keysym.M-v: perl:clipboard:paste
 URxvt*depth: 32
 
+! Base16 OneDark
+! Scheme: Lalit Magant (http://github.com/tilal6991)
 
-! Palenight Xresources palette
-!! COLORS
 
-!!URxvt*foreground:   #bbc5ff
-!!URxvt*background:   [95]#121419
-!!URxvt*cursorColor:  #bbc5ff
-!!
-!!XTerm*foreground: #bbc5ff
-!!XTerm*background: #121419
-!!XTerm*cursorColor: #bbc5ff
-!!
-!!! black
-!!*.color0:       #101010  !! originally #292d3e
-!!*.color8:       #434758
-!!
-!!! red
-!!*.color1:       #f07178
-!!*.color9:       #ff8b92
-!!
-!!! green
-!!*.color2:       #c3e88d
-!!*.color10:      #ddffa7
-!!
-!!! yellow
-!!*.color3:       #ffcb6b
-!!*.color11:      #ffe585
-!!
-!!! blue
-!!*.color4:       #82aaff
-!!*.color12:      #9cc4ff
-!!
-!!! magenta
-!!*.color5:       #c792ea
-!!*.color13:      #e1acff
-!!
-!!! cyan
-!!*.color6:       #89ddff
-!!*.color14:      #a3f7ff
-!!
-!!! white
-!!*.color7:       #d0d0d0
-!!*.color15:      #ffffff
-!!! special
-!!*.foreground:   #bbc2cf
-!!*.background:   #13161a
-!!*.cursorColor:  #bbc2cf
-!!
-!!! black
-!!*.color0:       #1c1f24
-!!*.color8:       #5b6268
-!!
-!!! red
-!!*.color1:       #ff6c6b
-!!*.color9:       #da8548
-!!
-!!! green
-!!*.color2:       #98be65
-!!*.color10:      #4db5bd
-!!
-!!! yellow
-!!*.color3:       #da8548
-!!*.color11:      #ecbe7b
-!!
-!!! blue
-!!*.color4:       #51afef
-!!*.color12:      #2257a0
-!!
-!!! magenta
-!!*.color5:       #c678dd
-!!*.color13:      #a9a1e1
-!!
-!!! cyan
-!!*.color6:       #5699af
-!!*.color14:      #46d9ff
-!!
-!!! white
-!!*.color7:       #202328
-!!*.color15:      #dfdfdf
-!!
 
-#define nord0 #2E3440
-#define nord1 #3B4252
-#define nord2 #434C5E
-#define nord3 #4C566A
-#define nord4 #D8DEE9
-#define nord5 #E5E9F0
-#define nord6 #ECEFF4
-#define nord7 #8FBCBB
-#define nord8 #88C0D0
-#define nord9 #81A1C1
-#define nord10 #5E81AC
-#define nord11 #BF616A
-#define nord12 #D08770
-#define nord13 #EBCB8B
-#define nord14 #A3BE8C
-#define nord15 #B48EAD
+#define base00 #1e222a
+#define base01 #353b45
+#define base02 #3e4451
+#define base03 #545862
+#define base04 #565c64
+#define base05 #abb2bf
+#define base06 #b6bdca
+#define base07 #c8ccd4
+#define base08 #e06c75
+#define base09 #d19a66
+#define base0A #e5c07b
+#define base0B #98c379
+#define base0C #56b6c2
+#define base0D #61afef
+#define base0E #c678dd
+#define base0F #be5046
 
-*.foreground:   nord4
-*.background:   nord0
-*.cursorColor:  nord4
-*fading: 35
-*fadeColor: nord3
+*.background:   base00
+*.foreground:   base07
+*.cursorColor:  base05
 
-*.color0: nord1
-*.color1: nord11
-*.color2: nord14
-*.color3: nord13
-*.color4: nord9
-*.color5: nord15
-*.color6: nord8
-*.color7: nord5
-*.color8: nord3
-*.color9: nord11
-*.color10: nord14
-*.color11: nord13
-*.color12: nord9
-*.color13: nord15
-*.color14: nord7
-*.color15: nord6
+*color0:       base00
+*color1:       base08
+*color2:       base0B
+*color3:       base0A
+*color4:       base0D
+*color5:       base0E
+*color6:       base0C
+*color7:       base05
+
+*color8:       base03
+*color9:       base08
+*color10:      base0B
+*color11:      base0A
+*color12:      base0D
+*color13:      base0E
+*color14:      base0C
+*color15:      base07
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*color16:      base09
+*color17:      base0F
+*color18:      base01
+*color19:      base02
+*color20:      base04
+*color21:      base06
+
+tabbed.selbgcolor:   #282c34
+tabbed.selfgcolor:   #d6d8eb
+tabbed.normfgcolor:  #9294a8
+tabbed.normbgcolor:  #353b45
