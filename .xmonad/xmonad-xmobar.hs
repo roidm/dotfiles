@@ -30,7 +30,6 @@ import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarColor, xmobarPP, s
 import XMonad.Hooks.EwmhDesktops  -- for some fullscreen events, also for xcomposite in obs.
 import XMonad.Hooks.ManageDocks (avoidStruts, docksEventHook, manageDocks, ToggleStruts(..))
 import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat, isDialog, doCenterFloat)
-import XMonad.Hooks.ServerMode
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WorkspaceHistory
 import XMonad.Hooks.InsertPosition (Position(End), Focus(Newer), insertPosition)
@@ -39,7 +38,6 @@ import XMonad.Hooks.InsertPosition (Position(End), Focus(Newer), insertPosition)
 import XMonad.Layout.Gaps
 import XMonad.Layout.GridVariants (Grid(Grid))
 import XMonad.Layout.SimplestFloat
-import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.MouseResizableTile
 import XMonad.Layout.ThreeColumns
@@ -47,17 +45,17 @@ import XMonad.Layout.ThreeColumns
     -- Layouts modifiers
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
-import XMonad.Layout.Magnifier
 import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Renamed
+import XMonad.Layout.Named
 import XMonad.Layout.Simplest
 import XMonad.Layout.Spacing
-import XMonad.Layout.SubLayouts
 import XMonad.Layout.WindowArranger (windowArrange, WindowArrangerMsg(..))
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
+import qualified XMonad.Layout.Dwindle as Dwindle
 
    -- Utilities
 import XMonad.Util.EZConfig (additionalKeysP)
@@ -69,10 +67,13 @@ myFont :: String
 myFont = "xft:UbuntuMono Nerd Font:regular:size=12:antialias=true:hinting=true"
 
 myModMask :: KeyMask
-myModMask = mod4Mask        -- Sets modkey to super/windows key
+myModMask = mod4Mask        -- modkey to super/windows key
+
+altMask :: KeyMask
+altMask = mod1Mask
 
 myTerminal :: String
-myTerminal = "alacritty"    -- Sets default terminal
+myTerminal = "alacritty"    -- default terminal
 
 myTerm2 :: String
 myTerm2 = "st"
@@ -83,14 +84,17 @@ myvlc = "vlc"
 myTelegram :: String
 myTelegram = "Telegram"
 
+myobs :: String
+myobs = "obs"
+
 myBrowser :: String
 myBrowser = "firefox"
 
 myEditor :: String
-myEditor = myTerminal ++ " -e nvim "    -- Sets vim as editor
+myEditor = myTerminal ++ " -e nvim "  -- nvim as editor
 
 myBorderWidth :: Dimension
-myBorderWidth = 4           -- Sets border width for windows
+myBorderWidth = 4           -- window border
 
 myNormColor :: String
 myNormColor   = "#282c34"   -- Border color of normal windows
@@ -98,15 +102,11 @@ myNormColor   = "#282c34"   -- Border color of normal windows
 myFocusColor :: String
 myFocusColor  = "#4d78cc"   -- Border color of focused windows
 
-altMask :: KeyMask
-altMask = mod1Mask          -- Setting this for use in xprompts
-
 windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 myStartupHook :: X ()
 myStartupHook = do
-    --spawn "$HOME/.xmonad/scripts/polybar.sh"
     spawn "$HOME/.xmonad/scripts/autostart.sh"
     setWMName "LG3D"
 
@@ -119,6 +119,7 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  ,NS "ranger" spawnRngr findRngr manageRngr
                  ,NS "vlc" spawnVlc findVlc manageVlc
                  ,NS "Telegram" spawnTgrm findTgrm manageTgrm
+                 ,NS "obs" spawnObs findObs manageObs
                 ]
   where
     spawnTerm  = myTerm2 ++ " -n scratchpad"
@@ -152,29 +153,30 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  h = 0.5
                  w = 0.5
                  t = 0.75 -h
-                 l = 0.75 -w            
+                 l = 0.75 -w
+    spawnObs  = myobs
+    findObs  = resource =? "obs"
+    manageObs = customFloating $ W.RationalRect l t w h
+               where
+                 h = 0.7
+                 w = 0.7
+                 t = 0.85 -h
+                 l = 0.85 -w
 
---Makes setting the spacingRaw simpler to write. The spacingRaw module adds a configurable amount of space around windows.
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
--- Below is a variation of the above except no borders are applied
--- if fewer than two windows. So a single window has no gaps.
 mySpacing' :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
--- Defining a bunch of layouts, many that I don't use.
--- limitWindows n sets maximum number of windows displayed for layout.
--- mySpacing n sets the gap size around the windows.
 tall     = renamed [Replace "tall"]
-           $ subLayout [] (smartBorders Simplest)
            $ limitWindows 12
            $ mySpacing 9
            $ ResizableTall 1 (1/100) (1/2) []
-bsp        = renamed [Replace "bsp"] 
-           $ limitWindows 12
+dwindle  = renamed [Replace "dwindle"]
            $ mySpacing 9
-           $ emptyBSP 
+           $ limitWindows 12
+           $ Dwindle.Dwindle R Dwindle.CW (2/2) (11/10)
 monocle  = renamed [Replace "monocle"]
            $ limitWindows 20 Full
 grid     = renamed [Replace "grid"]
@@ -191,10 +193,10 @@ threeColMid = renamed [Replace "|C|"]
            $ limitWindows 7
            $ ThreeColMid 1 (1/100) (1/2)
 floats   = renamed [Replace "float"]
-           $ limitWindows 20 simplestFloat           
+           $ limitWindows 20 simplestFloat
 
 gap :: Int
-gap = 15
+gap = 18
 
 fi = fromIntegral
 
@@ -206,17 +208,13 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
              where
                myDefaultLayout =     withBorder myBorderWidth tall
-                                 ||| bsp
-                                 ||| noBorders monocle
+                                 ||| dwindle
+                                 ||| avoidStruts (applyGaps mrt)
                                  ||| grid
                                  ||| threeCol
                                  ||| threeColMid
+                                 ||| noBorders monocle
                                  ||| floats
-                                 ||| avoidStruts (applyGaps mrt)
-                                 --{ masterFrac = 0.5, fracIncrement = 0.05, draggerType = FixedDragger}
-
-
-
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
@@ -251,7 +249,7 @@ myKeys =
         , ("M-S-r", spawn "xmonad --restart")    -- Restarts xmonad
         , ("M-S-q", io exitSuccess)              -- Quits xmonad
 
-    -- Useful programs to have a keybinding for launch
+    --  Terminal, Browser, Htop
         , ("M-<Return>", spawn (myTerminal))
         , ("M-b", spawn (myBrowser))
         , ("M-M1-h", spawn (myTerminal ++ " -e htop"))
@@ -314,9 +312,10 @@ myKeys =
 
     -- Scratchpads
         , ("M1-t", namedScratchpadAction myScratchPads "terminal")
-        , ("M1-u", namedScratchpadAction myScratchPads "ranger")
-        , ("M1-o", namedScratchpadAction myScratchPads "vlc")
-        , ("M1-y", namedScratchpadAction myScratchPads "Telegram")
+        , ("M1-r", namedScratchpadAction myScratchPads "ranger")
+        , ("M1-S-v", namedScratchpadAction myScratchPads "vlc")
+        , ("M1-S-t", namedScratchpadAction myScratchPads "Telegram")
+        , ("M1-o", namedScratchpadAction myScratchPads "obs")
 
     --- My Applications
         , ("M1-d", spawn "gnome-disks")
@@ -344,11 +343,9 @@ main :: IO ()
 main = do
 
     xmbar <- spawnPipe "xmobar -x 0 $HOME/.config/xmobar/xmobar.hs"
-
-    -- the xmonad, ya know...what the WM is named after!
     xmonad $ ewmh def
         { manageHook = myManageHook <+> manageDocks
-        , handleEventHook    = docksEventHook <+> fullscreenEventHook  
+        , handleEventHook    = docksEventHook <+> fullscreenEventHook
         , modMask            = myModMask
         , terminal           = myTerminal
         , startupHook        = myStartupHook
@@ -358,19 +355,18 @@ main = do
         , normalBorderColor  = myNormColor
         , focusedBorderColor = myFocusColor
         , logHook = dynamicLogWithPP $ namedScratchpadFilterOutWorkspacePP $ xmobarPP
-             -- the following variables beginning with 'pp' are settings for xmobar.
-              { ppOutput = \x -> hPutStrLn xmbar x                              -- xmobar 
+              { ppOutput = \x -> hPutStrLn xmbar x                              -- xmobar
               , ppCurrent = xmobarColor "#71abeb" "" . wrap "[" "]"             -- Current workspace
               , ppVisible = xmobarColor "#5AB1BB" "" . clickable                -- Visible but not current workspace
               , ppHidden = xmobarColor "#e5c07b" ""  . wrap "*" "" . clickable  -- Hidden workspaces
               , ppHiddenNoWindows = xmobarColor "#d6d5d5" ""  . clickable       -- Hidden workspaces (no windows)
-              , ppWsSep   = "  "
+              , ppWsSep   = "  "                                                -- Workspaces separator
               , ppTitle = xmobarColor "#9ec07c" "" . shorten 60                 -- Title of active window
               , ppSep =  "<fc=#4b5363> <fn=1>|</fn> </fc>"                      -- Separator character
               , ppUrgent = xmobarColor "#e06c75" "" . wrap "!" "!"              -- Urgent workspace
               , ppExtras  = [windowCount]                                       -- # of windows current workspace
               , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]                      -- order of things in xmobar
-              , ppLayout  = xmobarColor "#c678dd" "" . 
+              , ppLayout  = xmobarColor "#c678dd" "" .
                   ( \t -> case t of
                       "MouseResizableTile" -> "MRT"
                       _ -> t

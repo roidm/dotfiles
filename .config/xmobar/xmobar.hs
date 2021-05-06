@@ -15,14 +15,14 @@ Config { font    = "xft:UbuntuMono Nerd Font:weight=bold:pixelsize=20:antialias=
        , persistent = True
        , commands = [
                       Run Date "<fn=1> </fn> %b %d %Y - %H:%M " "date" 50
-                    , Run Network "enp34s0" ["-t","<fn=1></fn> <rx> kb <fn=1></fn> <tx> kb"] 20
-                    , Run Cpu ["-t", "<fn=1> ﬙ </fn> <total>%","-H","50","--high","red"] 20
-                    , Run Memory ["-t", "<fn=1> </fn> <used> MB"] 40
+                    , Run Network "enp34s0" ["-t","<fn=1> </fn> <rx> kb  <fn=1> </fn> <tx> kb"] 20
+                    , Run Cpu ["-t", "<fn=1> ﬙ </fn> <total>%"] 20
+                    , Run Com "~/.local/bin/memory" ["--listen"] "" 40
                     , Run Com "~/.local/bin/pavolume" ["--listen"] "" 10
                     , Run MultiCoreTemp ["-t", "﨎 <avg>°C", "-hwmonitor-path", "/sys/module/k10temp/drivers/pci:k10temp/0000:00:18.3/hwmon/hwmon2"] 50
                     , Run UnsafeStdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "<fc=#666666></fc> %UnsafeStdinReader% }{<fc=#e06c75> %enp34s0% </fc><fc=#4b5363>|</fc><fc=#6bb2c0> %multicoretemp% </fc><fc=#4b5363>|</fc><fc=#bc7ad9> %memory% </fc><fc=#4b5363>|</fc><fc=#ebcb8d> %cpu% </fc><fc=#4b5363>|</fc><fc=#71abeb> %pavolume% </fc><fc=#4b5363>|</fc><fc=#9ec07c> %date% </fc>"
+       , template ="<fc=#bc7ad9>   </fc> %UnsafeStdinReader% }{<fc=#e06c75> %enp34s0% </fc><fc=#4b5363>|</fc><fc=#6bb2c0> %multicoretemp% </fc><fc=#4b5363>|</fc><fc=#bc7ad9>   %memory%</fc><fc=#4b5363>|</fc><fc=#ebcb8d> %cpu% </fc><fc=#4b5363>|</fc><fc=#71abeb> %pavolume% </fc><fc=#4b5363>|</fc><fc=#9ec07c> %date% </fc>"
        }

@@ -1,35 +1,12 @@
-export TERM="xterm-256color"              # getting proper colors
-export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
+# /etc/skel/.bashrc
+#
+# This file is sourced by all *interactive* bash shells on startup,
+# including some apparently interactive shells such as scp and rcp
+# that can't tolerate any output.  So make sure this doesn't display
+# anything or bad things will happen !
 export PAGER="most"
+eval "$(starship init bash)"
 
-export ZSH="/home/roidm/.oh-my-zsh"
-
-### PATH
-if [ -d "$HOME/.bin" ] ;
-  then PATH="$HOME/.bin:$PATH"
-fi
-
-if [ -d "$HOME/.local/bin" ] ;
-  then PATH="$HOME/.local/bin:$PATH"
-fi
-
-if [ -d "$HOME/.local/share/applications" ] ;
-  then PATH="$HOME/.local/share/applications:$PATH"
-fi
-
-ZSH_THEME="spaceship"
-#ZSH_THEME="robbyrussell"
-
-plugins=(command-not-found
-         git
-         zsh-syntax-highlighting 
-         zsh-autosuggestions
-         history
-         zsh-interactive-cd)
-
-source $ZSH/oh-my-zsh.sh
-
-alias clean='doas emerge --ask --depclean'
 alias dn="nmcli dev show | grep DNS"
 alias fc="sudo free && sync && sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches' && free"
 alias psm="sudo ps_mem"
@@ -67,10 +44,25 @@ alias merge='xrdb -merge ~/.Xresources'
 alias cp="cp -i"
 alias mv='mv -i'
 alias rm='rm -i'
-
-### BASH INSULTER ###
-if [ -f /etc/bash.command-not-found ]; then
-    . /etc/bash.command-not-found
+# Test for an interactive shell.  There is no need to set anything
+# past this point for scp and rcp, and it's important to refrain from
+# outputting anything in those cases.
+if [[ $- != *i* ]] ; then
+	# Shell is non-interactive.  Be done now!
+	return
 fi
 
+
+# Put your fun stuff here.
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
 colorscript random
+bind 'set show-all-if-ambiguous on'
+bind 'set completion-ignore-case on'
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+if [ -f /etc/bash_completion ]; then
+   . /etc/bash_completion
+fi

@@ -4,12 +4,12 @@ Xft.dpi: 125
 Xft.antialias: true
 Xft.hinting: true
 Xft.rgba: rgb
-Xft.autohint: true
+Xft.autohint: false
 Xft.hintstyle: hintSlight
 Xft.lcdfilter: lcdfilter
 
 XTerm*renderFont: true
-XTerm*faceName: xft:UbuntuMono Nerd Font:size=16 \
+XTerm*faceName: xft:mononoki Nerd Font Mono:size=16 \
                 xft:JoyPixels:size=16, \
                 xft:Monospace:style=Medium:size=16   
 XTerm*faceSize: 16
@@ -34,7 +34,7 @@ URxvt*imLocale: en_US.UTF-8
 URxvt*termName: rxvt-unicode-256color
 URxvt*buffered: false
 URxvt.intensityStyles: false
-URxvt.font: xft:UbuntuMono Nerd Font:size=16, \
+URxvt.font: xft:mononoki Nerd Font Mono:size=16, \
             xft:JoyPixels:size=16, \
             xft:Monospace:style=Medium:size=16   
 URxvt.saveLines: 2000
@@ -60,122 +60,46 @@ URxvt.keysym.M-v: perl:clipboard:paste
 URxvt*depth: 32
 
 
-! Palenight Xresources palette
-!! COLORS
+#define base00 #1e222a
+#define base01 #353b45
+#define base02 #3e4451
+#define base03 #545862
+#define base04 #565c64
+#define base05 #abb2bf
+#define base06 #b6bdca
+#define base07 #c8ccd4
+#define base08 #e06c75
+#define base09 #d19a66
+#define base0A #e5c07b
+#define base0B #98c379
+#define base0C #56b6c2
+#define base0D #61afef
+#define base0E #c678dd
+#define base0F #be5046
 
-!!URxvt*foreground:   #bbc5ff
-!!URxvt*background:   [95]#121419
-!!URxvt*cursorColor:  #bbc5ff
-!!
-!!XTerm*foreground: #bbc5ff
-!!XTerm*background: #121419
-!!XTerm*cursorColor: #bbc5ff
-!!
-!!! black
-!!*.color0:       #101010  !! originally #292d3e
-!!*.color8:       #434758
-!!
-!!! red
-!!*.color1:       #f07178
-!!*.color9:       #ff8b92
-!!
-!!! green
-!!*.color2:       #c3e88d
-!!*.color10:      #ddffa7
-!!
-!!! yellow
-!!*.color3:       #ffcb6b
-!!*.color11:      #ffe585
-!!
-!!! blue
-!!*.color4:       #82aaff
-!!*.color12:      #9cc4ff
-!!
-!!! magenta
-!!*.color5:       #c792ea
-!!*.color13:      #e1acff
-!!
-!!! cyan
-!!*.color6:       #89ddff
-!!*.color14:      #a3f7ff
-!!
-!!! white
-!!*.color7:       #d0d0d0
-!!*.color15:      #ffffff
-!!! special
-!!*.foreground:   #bbc2cf
-!!*.background:   #13161a
-!!*.cursorColor:  #bbc2cf
-!!
-!!! black
-!!*.color0:       #1c1f24
-!!*.color8:       #5b6268
-!!
-!!! red
-!!*.color1:       #ff6c6b
-!!*.color9:       #da8548
-!!
-!!! green
-!!*.color2:       #98be65
-!!*.color10:      #4db5bd
-!!
-!!! yellow
-!!*.color3:       #da8548
-!!*.color11:      #ecbe7b
-!!
-!!! blue
-!!*.color4:       #51afef
-!!*.color12:      #2257a0
-!!
-!!! magenta
-!!*.color5:       #c678dd
-!!*.color13:      #a9a1e1
-!!
-!!! cyan
-!!*.color6:       #5699af
-!!*.color14:      #46d9ff
-!!
-!!! white
-!!*.color7:       #202328
-!!*.color15:      #dfdfdf
-!!
-
-#define nord0 #2E3440
-#define nord1 #3B4252
-#define nord2 #434C5E
-#define nord3 #4C566A
-#define nord4 #D8DEE9
-#define nord5 #E5E9F0
-#define nord6 #ECEFF4
-#define nord7 #8FBCBB
-#define nord8 #88C0D0
-#define nord9 #81A1C1
-#define nord10 #5E81AC
-#define nord11 #BF616A
-#define nord12 #D08770
-#define nord13 #EBCB8B
-#define nord14 #A3BE8C
-#define nord15 #B48EAD
-
-*.foreground:   #D8DEE9
-*.background:   #2E3440
-*.cursorColor:  #D8DEE9
+*.foreground:   #c8ccd4
+*.background:   #1e222a
+*.cursorColor:  #abb2bf
 *fading: 35
 *fadeColor: #4C566A
 
-*.color0: #3B4252
-*.color1: #BF616A
-*.color2: #A3BE8C
-*.color3: #EBCB8B
-*.color4: #81A1C1
-*.color5: #B48EAD
-*.color6: #88C0D0
-*.color7: #E5E9F0
-*.color8: #4C566A
-*.color9: #BF616A
-*.color10: #A3BE8C
-*.color11: #EBCB8B
-*.color12: #81A1C1
-*.color13: #B48EAD
-*.color14: #8FBCBB
-*.color15: #ECEFF4
+*.color0: #1e222a
+*.color1: #e06c75
+*.color2: #98c379
+*.color3: #e5c07b
+*.color4: #61afef
+*.color5: #c678dd
+*.color6: #56b6c2
+*.color7: #abb2bf
+*.color8: #545862
+*.color9: #e06c75
+*.color10: #98c379
+*.color11: #e5c07b
+*.color12: #61afef
+*.color13: #c678dd
+*.color14: #56b6c2
+*.color15: #c8ccd4
+
+!!st.font:  mononoki Nerd Font Mono:style:Regular:pixelsize=21
+st.font:  UbuntuMono Nerd Font Mono:style:Regular:pixelsize=23
+!!st.font: BlexMono Nerd Font Mono:style:Regular:pixelsize=20
