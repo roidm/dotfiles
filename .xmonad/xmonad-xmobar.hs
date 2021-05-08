@@ -41,6 +41,8 @@ import XMonad.Layout.SimplestFloat
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.MouseResizableTile
 import XMonad.Layout.ThreeColumns
+import XMonad.Layout.Spiral
+
 
     -- Layouts modifiers
 import XMonad.Layout.LayoutModifier
@@ -52,6 +54,7 @@ import XMonad.Layout.Renamed
 import XMonad.Layout.Named
 import XMonad.Layout.Simplest
 import XMonad.Layout.Spacing
+import XMonad.Layout.WindowNavigation
 import XMonad.Layout.WindowArranger (windowArrange, WindowArrangerMsg(..))
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
@@ -177,6 +180,10 @@ dwindle  = renamed [Replace "dwindle"]
            $ mySpacing 9
            $ limitWindows 12
            $ Dwindle.Dwindle R Dwindle.CW (2/2) (11/10)
+spirals  = renamed [Replace "spirals"]
+           $ windowNavigation
+           $ mySpacing' 9
+           $ spiral (2/2)           
 monocle  = renamed [Replace "monocle"]
            $ limitWindows 20 Full
 grid     = renamed [Replace "grid"]
@@ -195,6 +202,7 @@ threeColMid = renamed [Replace "|C|"]
 floats   = renamed [Replace "float"]
            $ limitWindows 20 simplestFloat
 
+
 gap :: Int
 gap = 18
 
@@ -209,6 +217,7 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
              where
                myDefaultLayout =     withBorder myBorderWidth tall
                                  ||| dwindle
+                                 ||| spirals
                                  ||| avoidStruts (applyGaps mrt)
                                  ||| grid
                                  ||| threeCol
@@ -217,10 +226,10 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
                                  ||| floats
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
+myWorkspaceIndex = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
 
 clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
-    where i = fromJust $ M.lookup ws myWorkspaceIndices
+    where i = fromJust $ M.lookup ws myWorkspaceIndex
 
 ------------------------------------------------------------------------
 -- MANAGEHOOK
