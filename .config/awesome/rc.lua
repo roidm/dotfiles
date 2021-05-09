@@ -22,6 +22,9 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
                       require("awful.hotkeys_popup.keys")
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 local dpi           = require("beautiful.xresources").apply_dpi
+local scratch       = require("scratch")
+screen_width = awful.screen.focused().geometry.width
+screen_height = awful.screen.focused().geometry.height
 
 -- }}}
 
@@ -58,7 +61,7 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "Alacritty", "unclutter -root" }) -- entries must be separated by commas
+run_once({ "Alacritty" }) -- entries must be separated by commas
 
 -- This function implements the XDG autostart specification
 --[[
@@ -75,7 +78,7 @@ awful.spawn.with_shell(
 -- {{{ Variable definitions
 
 local themes = {
-    "nord-powerarrow"  -- 1
+    "onedark"  -- 1
 }
 
 local chosen_theme = themes[1]
@@ -90,8 +93,11 @@ local gui_editor   = os.getenv("GUI_EDITOR") or "code"
 local browser      = os.getenv("BROWSER") or "firefox"
 local scrlocker    = "slock"
 
+
 awful.util.terminal = terminal
-awful.util.tagnames = {"   ", "   ", "   ", "   ", " 﨤  ", " 嗢  ", "   ", "   "}
+--awful.util.tagnames = {"   ", "   ", "   ", "   ", " 﨤  ", " 嗢  ", "   ", "   "}
+--awful.util.tagnames = {"   ", "   ", "   ", "   ", " 﨤  ", " 嗢  ", "   ", "   "}
+awful.util.tagnames = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}
 awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
@@ -102,9 +108,9 @@ awful.layout.layouts = {
     --awful.layout.suit.fair.horizontal,
     awful.layout.suit.spiral,
     awful.layout.suit.spiral.dwindle,
-    awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+    --awful.layout.suit.max,
+    --awful.layout.suit.max.fullscreen,
+    --awful.layout.suit.magnifier,
     --awful.layout.suit.corner.nw,
     --awful.layout.suit.corner.ne,
     --awful.layout.suit.corner.sw,
@@ -385,6 +391,8 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
+    awful.key({ altkey,           }, "Return", function () awful.spawn("st") end,
+              {description = "open St terminal", group = "launcher"}),          
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
@@ -452,9 +460,13 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
             os.execute("playerctl previous") end),
             
        -- Prompt
-    awful.key({ modkey1 }, "space", function () awful.spawn.with_shell("dmenu_run -sb '#5e81ac' -p 'Run: '")end,
-              {description = "run prompt", group = "launcher"}),
+    awful.key({ altkey }, "space", function () awful.spawn.with_shell("dmenu_run -sb '#4d78cc' -p 'Run: '")end,
+              {description = "run dmenu prompt", group = "launcher"}),
+    
+    awful.key({ modkey1 }, "space", function () awful.spawn.with_shell("rofi -show drun" )end,
+             {description = "run rofi prompt", group = "launcher"}),              
 
+    awful.key({ altkey }, "t", function () scratch.toggle("st -c scratch", { instance = "scratch-term" }) end),
    
 
     awful.key({ altkey }, "g", function () awful.spawn.with_shell("gthumb")end,
@@ -466,8 +478,8 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
     awful.key({ altkey }, "v", function () awful.spawn.with_shell("code")end,
               {description = "run visual studio code", group = "launcher"}),          
     
-    awful.key({ altkey }, "e", function () awful.spawn.with_shell("nemo")end,
-              {description = "run nemo", group = "launcher"}),
+    awful.key({ altkey }, "e", function () awful.spawn.with_shell("thunar")end,
+              {description = "run thunar", group = "launcher"}),
     
     awful.key({ altkey }, "m", function () awful.spawn.with_shell("gnome-system-monitor")end,
               {description = "run gnome-system-monitor", group = "launcher"}),
@@ -625,7 +637,29 @@ awful.rules.rules = {
     -- Titlebars
     { rule_any = { type = { "dialog", "normal" } },
       properties = { titlebars_enabled = false } },
-
+   
+    {
+        rule_any = {
+            instance = { "scratch" },
+            class = { "scratch" },
+            icon_name = { "scratchpad_st" },
+        },
+        properties = {
+            skip_taskbar = false,
+            floating = true,
+            ontop = false,
+            minimized = true,
+            sticky = false,
+            width = screen_width * 0.5,
+            height = screen_height * 0.55
+        },
+        callback = function (c)
+            awful.placement.centered(c,{honor_padding = true, honor_workarea=true})
+            gears.timer.delayed_call(function()
+                c.urgent = false
+            end)
+        end
+    },
    
     -- Floating clients.
     { rule_any = {
@@ -637,6 +671,8 @@ awful.rules.rules = {
           "Arandr",
           "Glimpse",
           "glimpse",
+          "Pixeluvo",
+          "Pixeluvo64",
           "Gimp",
           "gimp",
           "Kruler",
@@ -646,6 +682,7 @@ awful.rules.rules = {
           "Wpa_gui",
           "pinentry",
           "veromix",
+          "obs",
           "xtightvncviewer"},
 
         name = {
@@ -655,7 +692,7 @@ awful.rules.rules = {
           "AlarmWindow",  -- Thunderbird's calendar.
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
-      }, properties = { floating = true }},   
+      }, properties = { floating = true }},       
 }
 -- }}}
     -- Set Firefox to always map on the first tag on screen 1.
@@ -686,6 +723,11 @@ client.connect_signal("request::titlebars", function(c)
 
     -- Default
     -- buttons for the titlebar
+    local top_titlebar = awful.titlebar(c, {
+        height    = 60,
+      --  bg_normal = '#ff0000',
+    })
+
     local buttons = my_table.join(
         awful.button({ }, 1, function()
             c:emit_signal("request::activate", "titlebar", {raise = true})
@@ -698,7 +740,7 @@ client.connect_signal("request::titlebars", function(c)
         end)
     )
 
-    awful.titlebar(c, {size = dpi(16)}) : setup {
+    awful.titlebar(c, {size = dpi(60)}) : setup {
         { -- Left
             awful.titlebar.widget.iconwidget(c),
             buttons = buttons,
@@ -734,6 +776,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- useless gaps
 
-beautiful.useless_gap = 10
+beautiful.useless_gap = 9
 
-awful.spawn.with_shell("/home/roidm/.config/awesome/autostart.sh")
+awful.spawn.with_shell( os.getenv("HOME") .. "/.config/awesome/autostart.sh")
+

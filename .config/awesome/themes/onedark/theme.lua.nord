@@ -19,45 +19,30 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/nord-powerarrow"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
-theme.font                                      = "UbuntuMono Nerd Font Bold 12"
-theme.taglist_font                              = "UbuntuMono Nerd Font Bold 12"
-theme.tasklist_font                             = "UbuntuMono Nerd Font Bold 12"        
+theme.font                                      = "UbuntuMono Nerd Font 12"
+theme.taglist_font                              = "UbuntuMono Nerd Font 15"
+theme.tasklist_font                            = "UbuntuMono Nerd Font Bold 12"           
 theme.fg_normal                                 = "#d8dee9"
-theme.fg_focus                                  = "#9ec07c"
+theme.fg_focus                                  = "#81a1c1"
 theme.fg_urgent                                 = "#CC9393"
-theme.bg_normal                                 = "#1E222A"
-theme.bg_focus                                  = "#282C34"
+theme.bg_normal                                 = "#252831"
+theme.bg_focus                                  = "#373e4d"
 theme.bg_urgent                                 = "#1A1A1A"
-theme.border_width                              = dpi(4)
-theme.border_normal                             = "#282C34"
-theme.border_focus                              = "#4d78cc"
+theme.border_width                              = dpi(3)
+theme.border_normal                             = "#2e3440"
+theme.border_focus                              = "#5e81ac"
 theme.border_marked                             = "#CC9393"
-theme.tasklist_bg_focus                         = "#1E222A"
-theme.taglist_bg_focus                          = "#1E222A"
-theme.taglist_fg_focus                          = "#4d78cc"
-theme.taglist_fg_occupied                       = "#e5c07a"
+theme.tasklist_bg_focus                         = "#252831"
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
-theme.titlebar_fg_focus                         = "#9ec07c"
+theme.titlebar_fg_focus                         = theme.fg_focus
 theme.menu_height                               = dpi(16)
 theme.menu_width                                = dpi(140)
-theme.taglist_disable_icon                      = true
-theme.layout_txt_tile                           = "[]="
-theme.layout_txt_tileleft                       = "=[]"
-theme.layout_txt_tilebottom                     = "[TTT]"
-theme.layout_txt_tiletop                        = "[TT]"
-theme.layout_txt_fairv                          = "[HHH]"
-theme.layout_txt_fairh                          = "[fh]"
-theme.layout_txt_spiral                         = "[@]"
-theme.layout_txt_dwindle                        = "[\\]"
-theme.layout_txt_max                            = "[m]"
-theme.layout_txt_fullscreen                     = "[F]"
-theme.layout_txt_magnifier                      = "[M]"
-theme.layout_txt_floating                       = "><>"
+theme.taglist_disable_icon = true
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
---theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
---theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
---[[theme.layout_tile                               = theme.dir .. "/icons/tile.png"
+theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
+theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
+theme.layout_tile                               = theme.dir .. "/icons/tile.png"
 theme.layout_centerwork                         = theme.dir .. "/icons/centerwork.png"
 theme.layout_tileleft                           = theme.dir .. "/icons/tileleft.png"
 theme.layout_tilebottom                         = theme.dir .. "/icons/tilebottom.png"
@@ -69,8 +54,8 @@ theme.layout_dwindle                            = theme.dir .. "/icons/dwindle.p
 theme.layout_max                                = theme.dir .. "/icons/max.png"
 theme.layout_fullscreen                         = theme.dir .. "/icons/fullscreen.png"
 theme.layout_magnifier                          = theme.dir .. "/icons/magnifier.png"
-theme.layout_floating                           = theme.dir .. "/icons/floating.png"]]--
---theme.widget_ac                                 = theme.dir .. "/icons/ac.png"
+theme.layout_floating                           = theme.dir .. "/icons/floating.png"
+theme.widget_ac                                 = theme.dir .. "/icons/ac.png"
 --theme.widget_battery                            = theme.dir .. "/icons/battery.png"
 --theme.widget_battery_low                        = theme.dir .. "/icons/battery_low.png"
 --theme.widget_battery_empty                      = theme.dir .. "/icons/battery_empty.png"
@@ -86,13 +71,12 @@ theme.widget_vol_low                            = theme.dir .. "/icons/vol_low.p
 theme.widget_vol_no                             = theme.dir .. "/icons/vol_no.png"
 theme.widget_vol_mute                           = theme.dir .. "/icons/vol_mute.png"
 --theme.widget_mail                               = theme.dir .. "/icons/mail.png" theme.widget_mail_on                            = theme.dir .. "/icons/mail_on.png"
-theme.tasklist_spacing                          = dpi(10)
-theme.taglist_spacing                           = dpi(10)
-theme.tasklist_align                            = "left"
-theme.tasklist_disable_task_name                = false
+theme.tasklist_spacing = dpi(5)
+theme.tasklist_align = "left"
+theme.tasklist_disable_task_name = false
 theme.tasklist_plain_task_name                  = true
 theme.tasklist_disable_icon                     = true
-theme.useless_gap                               = dpi(9)
+theme.useless_gap                               = dpi(10)
 theme.titlebar_close_button_focus               = theme.dir .. "/icons/titlebar/close_focus.png"
 theme.titlebar_close_button_normal              = theme.dir .. "/icons/titlebar/close_normal.png"
 theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/titlebar/ontop_focus_active.png"
@@ -112,17 +96,6 @@ theme.titlebar_maximized_button_normal_active   = theme.dir .. "/icons/titlebar/
 theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
 
--- lain related
-theme.layout_txt_termfair                       = "[termfair]"
-theme.layout_txt_centerwork                     = "[|M|]"
-theme.layout_txt_centerfair                     = "[|M|]"
-
-local function update_txt_layoutbox(s)
-    -- Writes a string representation of the current layout in a textbox widget
-    local txt_l = theme["layout_txt_" .. awful.layout.getname(awful.layout.get(s))] or ""
-    s.mytxtlayoutbox:set_text(txt_l)
-end
-
 local markup = lain.util.markup
 local separators = lain.util.separators
 
@@ -133,7 +106,7 @@ local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
     "date +'  %d/%m/%y - %H:%M'", 60,
     function(widget, stdout)
-        widget:set_markup(" " .. markup.fontfg("UbuntuMono Nerd Font Bold 11", "#9ec07c", stdout))
+        widget:set_markup(" " .. markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", stdout))
     end
 )
 -- Calendar
@@ -186,7 +159,7 @@ theme.cal = lain.widget.cal({
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem({
     settings = function()
-        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#bc7ad9", " " .. "  " .. mem_now.used .. "MB "))
+        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", " " .. "  " .. mem_now.used .. "MB "))
     end
 })
 
@@ -194,16 +167,16 @@ local mem = lain.widget.mem({
 local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
 local cpu = lain.widget.cpu({
     settings = function()
-        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#e5c07a", " " .. "﬙  " .. cpu_now.usage .. "% "))
+        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", " " .. "﬙  " .. cpu_now.usage .. "% "))
     end
 })
 
 -- Coretemp
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
-    tempfile = "/sys/devices/platform/nct6775.2592/hwmon/hwmon3/temp7_input",                           
+    tempfile = "/sys/devices/platform/nct6775.2592/hwmon/hwmon2/temp7_input",                           
     settings = function()
-        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#56b6c2", " " .. "  " .. coretemp_now .. "°C "))
+        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", " " .. "  " .. coretemp_now .. "°C "))
     end
 })
 
@@ -221,16 +194,16 @@ theme.volume = lain.widget.alsa({
             volicon:set_image(theme.widget_vol)
         end
 
-        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#71abeb", " " .. "  " .. volume_now.level .. "% "))
+        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", " " .. "  " .. volume_now.level .. "% "))
     end
 })
 theme.volume.widget:buttons(awful.util.table.join(
                                awful.button({}, 4, function ()
-                                     awful.util.spawn("amixer set Master 5%+")
+                                     awful.util.spawn("amixer set Master 1%+")
                                      theme.volume.update()
                                end),
                                awful.button({}, 5, function ()
-                                     awful.util.spawn("amixer set Master 5%-")
+                                     awful.util.spawn("amixer set Master 1%-")
                                      theme.volume.update()
                                end)
 ))
@@ -239,7 +212,7 @@ theme.volume.widget:buttons(awful.util.table.join(
 local neticon = wibox.widget.imagebox(theme.widget_net)
 local net = lain.widget.net({
     settings = function()
-        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#e06c75", " " .. " " .. net_now.received .. "   " .. net_now.sent .. " "))
+        widget:set_markup(markup.fontfg("UbuntuMono Nerd Font Bold 11", "#d7d7d7", " " .. " " .. net_now.received .. "   " .. net_now.sent .. " "))
     end
 })
 
@@ -288,31 +261,20 @@ function theme.at_screen_connect(s)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
-
-    -- Textual layoutbox
-    s.mytxtlayoutbox = wibox.widget.textbox(theme["layout_txt_" .. awful.layout.getname(awful.layout.get(s))])
-    awful.tag.attached_connect_signal(s, "property::selected", function () update_txt_layoutbox(s) end)
-    awful.tag.attached_connect_signal(s, "property::layout", function () update_txt_layoutbox(s) end)
-    s.mytxtlayoutbox:buttons(my_table.join(
-                           awful.button({}, 1, function() awful.layout.inc(1) end),
-                           awful.button({}, 2, function () awful.layout.set( awful.layout.layouts[1] ) end),
-                           awful.button({}, 3, function() awful.layout.inc(-1) end),
-                           awful.button({}, 4, function() awful.layout.inc(1) end),
-                           awful.button({}, 5, function() awful.layout.inc(-1) end)))
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
-    --[[s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(my_table.join(
                            awful.button({}, 1, function () awful.layout.inc( 1) end),
                            awful.button({}, 2, function () awful.layout.set( awful.layout.layouts[1] ) end),
                            awful.button({}, 3, function () awful.layout.inc(-1) end),
                            awful.button({}, 4, function () awful.layout.inc( 1) end),
-                           awful.button({}, 5, function () awful.layout.inc(-1) end)))]]--
+                           awful.button({}, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.focused)
+    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons, nil, list_update)
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(26), bg = theme.bg_normal, fg = theme.fg_normal })
@@ -323,15 +285,8 @@ function theme.at_screen_connect(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             --awesome_icon,
-            spr,
+            --spr,
             s.mytaglist,
-            spr,
-            spr,
-            spr,
-            s.mytxtlayoutbox,
-            spr,
-            spr,
-            spr,
             s.mypromptbox,
             spr,
             spr,
@@ -347,17 +302,16 @@ function theme.at_screen_connect(s)
             temp.widget,
             spr,
             arrl_ld,
-            wibox.container.background(cpu.widget, theme.bg_focus),
+            wibox.container.background(theme.volume.widget, theme.bg_focus),
             arrl_dl,
             mem.widget,
             arrl_ld,
-            wibox.container.background(theme.volume.widget, theme.bg_focus),
+            wibox.container.background(cpu.widget, theme.bg_focus),
             arrl_dl,
             clock,
             spr,
-            spr,
-            --arrl_ld,
-            --wibox.container.background(s.mylayoutbox, theme.bg_focus),
+            arrl_ld,
+            wibox.container.background(s.mylayoutbox, theme.bg_focus),
             wibox.widget.systray(theme.bg_focus),
         },
     }
