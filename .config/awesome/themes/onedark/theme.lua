@@ -13,7 +13,7 @@ local dpi   = require("beautiful.xresources").apply_dpi
 local common = require("awful.widget.common")
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
-
+local quake         = require("util/quake")
 
 
 local theme                                     = {}
@@ -274,7 +274,8 @@ end
 
 function theme.at_screen_connect(s)
     -- Quake application
-    s.quake = lain.util.quake({ app = awful.util.terminal })
+    s.quake = quake({ app = "alacritty",argname = "--title %s",extra = "--class QuakeDD -e tmux", visible = true, width = 3827 ,  height = 0.5 })
+
 
     -- If wallpaper is a function, call it with the screen
     local wallpaper = theme.wallpaper

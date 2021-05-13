@@ -22,7 +22,7 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
                       require("awful.hotkeys_popup.keys")
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 local dpi           = require("beautiful.xresources").apply_dpi
-local scratch       = require("scratch")
+local scratch       = require("util/scratch")
 screen_width = awful.screen.focused().geometry.width
 screen_height = awful.screen.focused().geometry.height
 
@@ -52,28 +52,6 @@ do
 end
 -- }}}
 
--- {{{ Autostart windowless processes
-
--- This function will run once every time Awesome is started
-local function run_once(cmd_arr)
-    for _, cmd in ipairs(cmd_arr) do
-        awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd , "alacritty"))
-    end
-end
-
-run_once({ "Alacritty" }) -- entries must be separated by commas
-
--- This function implements the XDG autostart specification
---[[
-awful.spawn.with_shell(
-    'if (xrdb -query | grep -q "^awesome\\.started:\\s*true$"); then exit; fi;' ..
-    'xrdb -merge <<< "awesome.started:true";' ..
-    -- list each of your autostart commands, followed by ; inside single quotes, followed by ..
-    'dex --environment Awesome --autostart --search-paths "$XDG_CONFIG_DIRS/autostart:$XDG_CONFIG_HOME/autostart"' -- https://github.com/jceb/dex
-)
---]]
-
--- }}}
 
 -- {{{ Variable definitions
 
@@ -191,24 +169,24 @@ beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv
 -- }}}
 
 -- {{{ Menu
-local myawesomemenu = {
-    { "hotkeys", function() return false, hotkeys_popup.show_help end },
-    { "manual", terminal .. " -e man awesome" },
-    { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
-    { "restart", awesome.restart },
-    { "quit", function() awesome.quit() end }
-}
-awful.util.mymainmenu = freedesktop.menu.build({
-    icon_size = beautiful.menu_height or dpi(16),
-    before = {
-        { "Awesome", myawesomemenu, beautiful.awesome_icon },
+-- local myawesomemenu = {
+--    { "hotkeys", function() return false, hotkeys_popup.show_help end },
+--    { "manual", terminal .. " -e man awesome" },
+--    { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
+--    { "restart", awesome.restart },
+--    { "quit", function() awesome.quit() end }
+-- }
+--awful.util.mymainmenu = freedesktop.menu.build({
+--    icon_size = beautiful.menu_height or dpi(16),
+ --   before = {
+ --       { "Awesome", myawesomemenu, beautiful.awesome_icon },
         -- other triads can be put here
-    },
-    after = {
-        { "Open terminal", terminal },
-        -- other triads can be put here
-    }
-})
+ --   },
+ --   after = {
+ --       { "Open terminal", terminal },
+ --       -- other triads can be put here
+ --   }
+-- })
 -- hide menu when mouse leaves it
 --awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
 
@@ -241,16 +219,8 @@ screen.connect_signal("arrange", function (s)
     end
 end)
 -- Create a wibox for each screen and add it
-awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
--- }}}
 
--- {{{ Mouse bindings
-root.buttons(my_table.join(
-    awful.button({ }, 3, function () awful.util.mymainmenu:toggle() end)
-   --awful.button({ }, 4, awful.tag.viewnext),
-    --awful.button({ }, 5, awful.tag.viewprev)
-))
--- }}}
+awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
 
 -- {{{ Key bindings
 globalkeys = my_table.join(
@@ -266,17 +236,8 @@ globalkeys = my_table.join(
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),
-    -- Tag browsing
-    --awful.key({ modkey,           }, "Left",   awful.tag.viewprev,{description = "view previous", group = "tag"}),
-    --awful.key({ modkey,           }, "Right",  awful.tag.viewnext,{description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
-
-    -- Non-empty tag browsing
-    --awful.key({ altkey }, "Left", function () lain.util.tag_view_nonempty(-1) end,
-              --{description = "view  previous nonempty", group = "tag"}),
-    --awful.key({ altkey }, "Right", function () lain.util.tag_view_nonempty(1) end,
-              --{description = "view  previous nonempty", group = "tag"}),
 
     -- Default client focus
     awful.key({ altkey,           }, "j",
@@ -317,8 +278,6 @@ globalkeys = my_table.join(
             if client.focus then client.focus:raise() end
         end,
         {description = "focus right", group = "client"}),
-    awful.key({ modkey,           }, "w", function () awful.util.mymainmenu:show() end,
-              {description = "show main menu", group = "awesome"}),
 
               --kill all notifications
 awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
@@ -427,8 +386,8 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
               {description = "restore minimized", group = "client"}),
 
     -- Dropdown application
-    --awful.key({ modkey, }, "z", function () awful.screen.focused().quake:toggle() end,
-      --        {description = "dropdown application", group = "launcher"}),
+    awful.key({ modkey, }, "z", function () awful.screen.focused().quake:toggle() end,
+            {description = "dropdown application", group = "launcher"}),
 
     -- Widgets popups
     awful.key({ altkey, }, "c", function () if beautiful.cal then beautiful.cal.show(7) end end,
@@ -488,7 +447,13 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
               {description = "run gnome-disk", group = "launcher"}),
 
 
-
+    awful.key({ altkey }, "s", function () awful.spawn.with_shell("compton-trans -c -5")end,
+              {description = "-5 window opacity", group = "screen"}),
+    
+    awful.key({ altkey, "Shift" }, "s", function () awful.spawn.with_shell("compton-trans -c +5")end,
+              {description = "+5 window opacity", group = "screen"}),              
+                  
+                  
 
 
     awful.key({ modkey }, "x",
