@@ -1,10 +1,3 @@
---[[
-
-     Awesome WM configuration template
-     github.com/lcpz
-
---]]
-
 -- {{{ Required libraries
 local awesome, client, mouse, screen, tag = awesome, client, mouse, screen, tag
 local ipairs, string, os, table, tostring, tonumber, type = ipairs, string, os, table, tostring, tonumber, type
@@ -166,46 +159,6 @@ lain.layout.cascade.tile.nmaster       = 5
 lain.layout.cascade.tile.ncol          = 2
 
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
--- }}}
-
--- {{{ Menu
--- local myawesomemenu = {
---    { "hotkeys", function() return false, hotkeys_popup.show_help end },
---    { "manual", terminal .. " -e man awesome" },
---    { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
---    { "restart", awesome.restart },
---    { "quit", function() awesome.quit() end }
--- }
---awful.util.mymainmenu = freedesktop.menu.build({
---    icon_size = beautiful.menu_height or dpi(16),
- --   before = {
- --       { "Awesome", myawesomemenu, beautiful.awesome_icon },
-        -- other triads can be put here
- --   },
- --   after = {
- --       { "Open terminal", terminal },
- --       -- other triads can be put here
- --   }
--- })
--- hide menu when mouse leaves it
---awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
-
---menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
--- }}}
-
--- {{{ Screen
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
---[[screen.connect_signal("property::geometry", function(s)
-    -- Wallpaper
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
-        -- If wallpaper is a function, call it with the screen
-        if type(wallpaper) == "function" then
-            wallpaper = wallpaper(s)
-        end
-        gears.wallpaper.maximized(wallpaper, s, true)
-    end
-end)--]]
 
 -- No borders when rearranging only 1 non-floating or maximized client
 screen.connect_signal("arrange", function (s)
@@ -226,7 +179,7 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 globalkeys = my_table.join(
     -- Take a screenshot
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
-    awful.key({ altkey }, "p", function() os.execute("screenshot") end,
+    awful.key({ }, "Print", function() os.execute("screenshot") end,
               {description = "take a screenshot", group = "hotkeys"}),
 
     -- X screen locker
@@ -348,7 +301,7 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
               {description = "delete tag", group = "tag"}),
 
     -- Standard program
-    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
+    awful.key({ modkey,           }, "Return", function () awful.spawn("alacritty") end,
               {description = "open a terminal", group = "launcher"}),
     awful.key({ altkey,           }, "Return", function () awful.spawn("st") end,
               {description = "open St terminal", group = "launcher"}),          
@@ -357,9 +310,9 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
-    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incmwfact( 0.05)          end,
+    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incmwfact( 0.01)          end,
               {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incmwfact(-0.05)          end,
+    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incmwfact(-0.01)          end,
               {description = "decrease master width factor", group = "layout"}),
     awful.key({ altkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
               {description = "increase the number of master clients", group = "layout"}),
@@ -386,16 +339,16 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
               {description = "restore minimized", group = "client"}),
 
     -- Dropdown application
-    awful.key({ modkey, }, "z", function () awful.screen.focused().quake:toggle() end,
-            {description = "dropdown application", group = "launcher"}),
+   -- awful.key({ modkey, }, "z", function () awful.screen.focused().quake:toggle() end,
+     --       {description = "dropdown application", group = "launcher"}),
 
     -- Widgets popups
     awful.key({ altkey, }, "c", function () if beautiful.cal then beautiful.cal.show(7) end end,
               {description = "show calendar", group = "widgets"}),
-    awful.key({ altkey, }, "h", function () if beautiful.fs then beautiful.fs.show(7) end end,
-              {description = "show filesystem", group = "widgets"}),
-    awful.key({ altkey, }, "w", function () if beautiful.weather then beautiful.weather.show(7) end end,
-              {description = "show weather", group = "widgets"}),
+--    awful.key({ altkey, }, "h", function () if beautiful.fs then beautiful.fs.show(7) end end,
+--              {description = "show filesystem", group = "widgets"}),
+--    awful.key({ altkey, }, "w", function () if beautiful.weather then beautiful.weather.show(7) end end,
+--              {description = "show weather", group = "widgets"}),
 
     
     -- ALSA volume control
@@ -431,11 +384,11 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
     awful.key({ altkey }, "g", function () awful.spawn.with_shell("gthumb")end,
               {description = "run gthumb", group = "launcher"}),
     
-    awful.key({ altkey }, "k", function () awful.spawn.with_shell("kate")end,
-              {description = "run kate", group = "launcher"}),
-
-    awful.key({ altkey }, "v", function () awful.spawn.with_shell("code")end,
-              {description = "run visual studio code", group = "launcher"}),          
+    awful.key({ modkey1 }, "e", function () awful.spawn.with_shell("emacsclient -c -a 'emacs' ")end,
+              {description = "run emacs", group = "launcher"}),         
+    
+    awful.key({ altkey }, "v", function () awful.spawn.with_shell("st -e nvim")end,
+              {description = "run Neovim", group = "launcher"}),          
     
     awful.key({ altkey }, "e", function () awful.spawn.with_shell("thunar")end,
               {description = "run thunar", group = "launcher"}),
@@ -451,8 +404,8 @@ awful.key({ modkey, }, "\\", naughty.destroy_all_notifications,
               {description = "-5 window opacity", group = "screen"}),
     
     awful.key({ altkey, "Shift" }, "s", function () awful.spawn.with_shell("compton-trans -c +5")end,
-              {description = "+5 window opacity", group = "screen"}),              
-                  
+              {description = "+5 window opacity", group = "screen"}),      
+                            
                   
 
 
@@ -500,7 +453,16 @@ clientkeys = my_table.join(
             c.maximized = not c.maximized
             c:raise()
         end ,
-        {description = "maximize", group = "client"})
+        {description = "maximize", group = "client"}),
+
+    awful.key({ modkey }, "a", 
+        function (c)   
+          c.floating = not c.floating
+          c.width = c.screen.geometry.width*3/5
+          c.x = c.screen.geometry.x+(c.screen.geometry.width/5)
+          c.height = c.screen.geometry.height * 0.93
+          c.y = c.screen.geometry.height* 0.04
+    end , {description = "toggle Float/Tile a window", group = "client"})    
 )
 
 
@@ -640,6 +602,8 @@ awful.rules.rules = {
           "Pixeluvo64",
           "Gimp",
           "gimp",
+          "skype",
+          "Skype",
           "Kruler",
           "MessageWin",  -- kalarm.
           "mpv",

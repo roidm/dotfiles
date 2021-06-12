@@ -3,7 +3,8 @@ picom -b &
 nitrogen --restore &
 killall "xiccd"
 xiccd & 
-notify-osd &
 polkit-gnome-authentication-agent-1 &
 xfce4-power-manager &
-pamixer --set-volume 70
+killall "emacs"
+emacs --daemon &
+sleep 4 && pamixer --set-volume 70
