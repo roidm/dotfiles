@@ -6,7 +6,7 @@ import System.Exit (exitSuccess)
 import qualified XMonad.StackSet as W
 
     -- Actions
-import XMonad.Actions.CopyWindow (kill1)
+import XMonad.Actions.CopyWindow (kill1, copyToAll, killAllOtherCopies)
 import XMonad.Actions.CycleWS (Direction1D(..), moveTo, shiftTo, WSType(..), nextScreen, prevScreen)
 import XMonad.Actions.MouseResize
 import XMonad.Actions.Promote
@@ -18,17 +18,16 @@ import qualified XMonad.Actions.Search as S
     -- Data
 import XMonad.Prelude (isJust, fromJust, isSpace, toUpper, isDigit, Endo)
 import qualified Data.Map as M
-
     -- Hooks
-import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarColor, xmobarPP, shorten, PP(..))
+import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarColor, xmobarPP, xmobarBorder, shorten, PP(..))
 import XMonad.Hooks.EwmhDesktops  -- for some fullscreen events, also for xcomposite in obs.
 import XMonad.Hooks.ManageDocks (avoidStruts, docksEventHook, manageDocks, ToggleStruts(..))
 import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat, isDialog, doCenterFloat)
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ServerMode
 import XMonad.Hooks.WorkspaceHistory
-import XMonad.Hooks.InsertPosition (Position(End), Focus(Newer), insertPosition)
-
+import XMonad.Hooks.InsertPosition (Focus (..), Position (..), insertPosition)
+import XMonad.Hooks.RefocusLast  (refocusLastLayoutHook, refocusLastWhen, refocusingIsActive)
     -- Layouts
 import XMonad.Layout.Gaps
 import XMonad.Layout.GridVariants (Grid(Grid))
@@ -41,7 +40,7 @@ import XMonad.Layout.Spiral
     -- Layouts modifiers
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
-import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
+import XMonad.Layout.MultiToggle (Toggle (Toggle), mkToggle, single, EOT(EOT), (??))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Renamed
@@ -60,6 +59,12 @@ import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe)
 import XMonad.Util.SpawnOnce
+
+($.) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
+($.) = (.) . (.)
+
+if2 :: (a -> b -> Bool) -> (a -> b -> c) -> (a -> b -> c) -> a -> b -> c
+if2 p f g x y = if p x y then f x y else g x y
 
 myFont :: String
 myFont = "xft:UbuntuMono Nerd Font:regular:size=12:antialias=true:hinting=true"
@@ -113,6 +118,35 @@ myFocusColor :: String
 myFocusColor  = "#4d78cc"   -- Border color of focused windows
 -- myFocusColor  = "#98C379"
 
+myBorderColor :: String
+myBorderColor  = "#71abeb"
+
+centreRect :: W.RationalRect
+centreRect = W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3)
+
+videoRect :: W.RationalRect
+videoRect = W.RationalRect offset offset size size
+  where
+    size = 1 / 4
+    offset = 1 - size - (size / 8)
+
+isFloating :: Window -> WindowSet -> Bool
+isFloating w s = M.member w (W.floating s)
+
+enableFloat :: W.RationalRect -> Window -> (WindowSet -> WindowSet)
+enableFloat = flip W.float
+
+enableFloat' :: W.RationalRect -> Window -> X ()
+enableFloat' = windows $. enableFloat
+
+disableFloat :: Window -> (WindowSet -> WindowSet)
+disableFloat = W.sink
+
+disableFloat' :: Window -> X ()
+disableFloat' = windows . disableFloat
+
+toggleFloat :: W.RationalRect -> Window -> X ()
+toggleFloat r = windows . if2 isFloating disableFloat (enableFloat r)
 
 windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
@@ -121,6 +155,7 @@ myStartupHook :: X ()
 myStartupHook = do
     spawn "$HOME/.xmonad/scripts/autostart.sh"
     setWMName "LG3D"
+
 
 ---------------------------------------------
 ----Scratchpads
@@ -264,23 +299,24 @@ clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
 ------------------------------------------------------------------------
 myManageHook :: Query (Endo WindowSet)
 myManageHook = (isDialog --> doF W.swapUp)
+               <+> insertPosition End Newer
+               <+> namedScratchpadManageHook myScratchPads
                <+> composeAll
-               [ manageDocks
-               , (className =? "firefox" <&&> title =? "Library") --> doCenterFloat
+               [ (className =? "firefox" <&&> title =? "Library") --> doCenterFloat
                , (className =? "gcolor2")        --> doCenterFloat
                , (className =? "Gcolor2")        --> doCenterFloat
                , (className =? "Gimp.bin")        --> doCenterFloat
                , (className =? "gimp.bin")        --> doCenterFloat
                , (className =? "mpv")            --> doCenterFloat
                , (className =? "transmission-gtk") --> doCenterFloat
-               , (className =? "Transmission-gtk") --> doCenterFloat
+               , (className =? "transmission-gtk") --> doCenterFloat
+               , (className =? "file-roller") --> doCenterFloat
+               , (className =? "File-roller") --> doCenterFloat
                , (className =? "obs")            --> doCenterFloat
                , (className =? "Lxappearance")   --> doCenterFloat
                , (resource  =? "kdesktop")       --> doIgnore
                , (resource  =? "desktop_window") --> doIgnore
                , isDialog --> doCenterFloat
-               , namedScratchpadManageHook myScratchPads
-               , insertPosition End Newer
                ]
 
 myKeys :: [(String, X ())]
@@ -335,6 +371,9 @@ myKeys =
         , ("M-S-<Space>", sendMessage ToggleStruts)     -- Toggles struts
         , ("M-S-n", sendMessage $ MT.Toggle NOBORDERS)  -- Toggles noborder
         , ("M-<Space>", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- Toggles noborder/full
+        , ("M-a", withFocused $ toggleFloat centreRect)
+        , ("M-c", windows copyToAll <> withFocused (enableFloat' videoRect))
+        , ("M-S-a", killAllOtherCopies <> withFocused disableFloat')
 
     -- Increase/decrease windows in the master pane or the stack
         , ("M-S-<Up>", sendMessage (IncMasterN 1))      -- Increase # of clients master pane
@@ -362,15 +401,15 @@ myKeys =
         , ("M1-S-o", namedScratchpadAction myScratchPads "skypeforlinux")
 
     -- Emacs (CTRL-e followed by a key)
-        , ("C-e e", spawn myEmacs)                 -- start emacs
-        , ("C-e b", spawn (myEmacs ++ ("--eval '(ibuffer)'")))   -- list buffers
-        , ("C-e s", spawn (myEmacs ++ ("--eval '(eshell)'")))    -- eshell
-        , ("C-e d", spawn (myEmacs ++ ("--eval '(dired nil)'"))) -- dired
-
+        , ("M1-e e", spawn myEmacs)                 -- start emacs
+        , ("M1-e b", spawn (myEmacs ++ ("--eval '(ibuffer)'")))   -- list buffers
+        , ("M1-e s", spawn (myEmacs ++ ("--eval '(eshell)'")))    -- eshell
+        , ("M1-e d", spawn (myEmacs ++ ("--eval '(dired nil)'"))) -- dired
+        , ("M1-e v", spawn (myEmacs ++ ("--eval '(+vterm/here nil)'"))) -- vterm if on Doom Emacs
    
     --- My Applications
         , ("M1-d", spawn "gnome-disks")
-        , ("M1-e", spawn "thunar")
+        , ("M1-f", spawn "thunar")
         , ("M1-g", spawn "gthumb")
         , ("M1-m", spawn "gnome-system-monitor")
         , ("M1-s", spawn "compton-trans -c -5")
@@ -397,7 +436,7 @@ main = do
 
     xmbar <- spawnPipe "xmobar $HOME/.config/xmobar/xmobar.hs"
     xmonad $ ewmh def
-        { manageHook = myManageHook <+> manageDocks
+        { manageHook = manageDocks <+> myManageHook
         , handleEventHook    = docksEventHook <+> fullscreenEventHook
         , modMask            = myModMask
         , terminal           = myTerminal
@@ -409,9 +448,9 @@ main = do
         , focusedBorderColor = myFocusColor
         , logHook = dynamicLogWithPP $ namedScratchpadFilterOutWorkspacePP $ xmobarPP
               { ppOutput = \x -> hPutStrLn xmbar x                              -- xmobar
-              , ppCurrent = xmobarColor "#71abeb" "" . wrap "[" "]"             -- Current workspace
+              , ppCurrent = xmobarColor "#71abeb" "" . xmobarBorder "Bottom"  myBorderColor 3 -- Current workspace
               , ppVisible = xmobarColor "#5AB1BB" "" . clickable                -- Visible but not current workspace
-              , ppHidden = xmobarColor "#e5c07b" ""  . wrap "-" "-" . clickable  -- Hidden workspaces
+              , ppHidden = xmobarColor "#e5c07b" "" -- . wrap "-" "-" . clickable  -- Hidden workspaces
               , ppHiddenNoWindows = xmobarColor "#d6d5d5" ""  . clickable       -- Hidden workspaces (no windows)
               , ppWsSep   = "  "                                                -- Workspaces separator
               , ppTitle = xmobarColor "#9ec07c" "" . shorten 90                 -- Title of active window
