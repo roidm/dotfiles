@@ -1,73 +1,92 @@
   -- Base
-import XMonad
-import System.Directory
-import System.IO (hPutStrLn)
-import System.Exit (exitSuccess)
-import qualified XMonad.StackSet as W
+import           System.Directory
+import           System.Exit                         (exitSuccess)
+import           System.IO                           (hPutStrLn)
+import           XMonad
+import qualified XMonad.StackSet                     as W
 
     -- Actions
-import XMonad.Actions.CopyWindow (kill1, copyToAll, killAllOtherCopies)
-import XMonad.Actions.CycleWS (Direction1D(..), moveTo, shiftTo, WSType(..), nextScreen, prevScreen)
-import XMonad.Actions.MouseResize
-import XMonad.Actions.Promote
-import XMonad.Actions.RotSlaves (rotSlavesDown, rotAllDown)
-import XMonad.Actions.WindowGo (runOrRaise)
-import XMonad.Actions.WithAll (sinkAll, killAll)
-import qualified XMonad.Actions.Search as S
+import           XMonad.Actions.CopyWindow           (copyToAll, kill1,
+                                                      killAllOtherCopies)
+import           XMonad.Actions.CycleWS              (Direction1D (..),
+                                                      WSType (..), moveTo,
+                                                      nextScreen, prevScreen,
+                                                      shiftTo)
+import           XMonad.Actions.MouseResize
+import           XMonad.Actions.Promote
+import           XMonad.Actions.RotSlaves            (rotAllDown, rotSlavesDown)
+import           XMonad.Actions.WindowGo             (runOrRaise)
+import           XMonad.Actions.WithAll              (killAll, sinkAll)
 
     -- Data
-import XMonad.Prelude (isJust, fromJust, isSpace, toUpper, isDigit, Endo)
-import qualified Data.Map as M
+import qualified Data.Map                            as M
+import           XMonad.Prelude                      (Endo, fromJust, isDigit,
+                                                      isJust, isSpace, toUpper)
     -- Hooks
-import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarColor, xmobarPP, xmobarBorder, shorten, PP(..))
-import XMonad.Hooks.EwmhDesktops  -- for some fullscreen events, also for xcomposite in obs.
-import XMonad.Hooks.ManageDocks (avoidStruts, docksEventHook, manageDocks, ToggleStruts(..))
-import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat, isDialog, doCenterFloat)
-import XMonad.Hooks.SetWMName
-import XMonad.Hooks.ServerMode
-import XMonad.Hooks.WorkspaceHistory
-import XMonad.Hooks.InsertPosition (Focus (..), Position (..), insertPosition)
-import XMonad.Hooks.RefocusLast  (refocusLastLayoutHook, refocusLastWhen, refocusingIsActive)
+import           XMonad.Hooks.DynamicLog             (PP (..), dynamicLogWithPP,
+                                                      shorten, wrap,
+                                                      xmobarBorder, xmobarColor,
+                                                      xmobarPP)
+import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.InsertPosition         (Focus (..), Position (..),
+                                                      insertPosition)
+import           XMonad.Hooks.ManageDocks            (ToggleStruts (..),
+                                                      avoidStruts,
+                                                      docksEventHook,
+                                                      manageDocks)
+import           XMonad.Hooks.ManageHelpers          (doCenterFloat,
+                                                      doFullFloat, isDialog,
+                                                      isFullscreen)
+import           XMonad.Hooks.RefocusLast            (refocusLastLayoutHook,
+                                                      refocusLastWhen,
+                                                      refocusingIsActive)
+import           XMonad.Hooks.ServerMode
+import           XMonad.Hooks.SetWMName
+import           XMonad.Hooks.WorkspaceHistory
     -- Layouts
-import XMonad.Layout.Gaps
-import XMonad.Layout.GridVariants (Grid(Grid))
-import XMonad.Layout.SimplestFloat
-import XMonad.Layout.ResizableTile
-import XMonad.Layout.MouseResizableTile
-import XMonad.Layout.ThreeColumns
-import XMonad.Layout.Spiral
+import           XMonad.Layout.Gaps
+import           XMonad.Layout.GridVariants          (Grid (Grid))
+import           XMonad.Layout.MouseResizableTile
+import           XMonad.Layout.ResizableTile
+import           XMonad.Layout.SimplestFloat
+import           XMonad.Layout.Spiral
+import           XMonad.Layout.ThreeColumns
 
     -- Layouts modifiers
-import XMonad.Layout.LayoutModifier
-import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
-import XMonad.Layout.MultiToggle (Toggle (Toggle), mkToggle, single, EOT(EOT), (??))
-import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Renamed
-import XMonad.Layout.Named
-import XMonad.Layout.Spacing
-import XMonad.Layout.WindowNavigation
-import XMonad.Layout.WindowArranger (windowArrange, WindowArrangerMsg(..))
-import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
-import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
-import qualified XMonad.Layout.Dwindle as Dwindle
+import qualified XMonad.Layout.Dwindle               as Dwindle
+import           XMonad.Layout.LayoutModifier
+import           XMonad.Layout.LimitWindows          (decreaseLimit,
+                                                      increaseLimit,
+                                                      limitWindows)
+import           XMonad.Layout.MultiToggle           (EOT (EOT),
+                                                      Toggle (Toggle), mkToggle,
+                                                      single, (??))
+import qualified XMonad.Layout.MultiToggle           as MT (Toggle (..))
+import           XMonad.Layout.MultiToggle.Instances (StdTransformers (MIRROR, NBFULL, NOBORDERS))
+import           XMonad.Layout.Named
+import           XMonad.Layout.NoBorders
+import           XMonad.Layout.Renamed
+import           XMonad.Layout.Spacing
+import qualified XMonad.Layout.ToggleLayouts         as T (ToggleLayout (Toggle),
+                                                           toggleLayouts)
+import           XMonad.Layout.WindowArranger        (WindowArrangerMsg (..),
+                                                      windowArrange)
+import           XMonad.Layout.WindowNavigation
 
 
    -- Utilities
-import XMonad.Util.Dmenu
-import XMonad.Util.EZConfig (additionalKeysP)
-import XMonad.Util.NamedScratchpad
-import XMonad.Util.Run (runProcessWithInput, safeSpawn, spawnPipe)
-import XMonad.Util.SpawnOnce
+import           XMonad.Util.Dmenu
+import           XMonad.Util.EZConfig                (additionalKeysP)
+import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.Run                     (runProcessWithInput,
+                                                      safeSpawn, spawnPipe)
+import           XMonad.Util.SpawnOnce
 
 ($.) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
 ($.) = (.) . (.)
 
 if2 :: (a -> b -> Bool) -> (a -> b -> c) -> (a -> b -> c) -> a -> b -> c
 if2 p f g x y = if p x y then f x y else g x y
-
-myFont :: String
-myFont = "xft:UbuntuMono Nerd Font:regular:size=12:antialias=true:hinting=true"
 
 myModMask :: KeyMask
 myModMask = mod4Mask        -- modkey to super/windows key
@@ -76,7 +95,7 @@ altMask :: KeyMask
 altMask = mod1Mask
 
 myTerminal :: String
-myTerminal = "alacritty"    -- default terminal
+myTerminal = "st"    -- default terminal
 
 myEmacs :: String
 myEmacs = "emacsclient -c -a 'emacs' "  -- Makes emacs keybindings easier to type
@@ -172,7 +191,7 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
 
                 ]
   where
-    spawnTerm  = myTerminal ++ " --class spad"
+    spawnTerm  = myTerminal ++ " -n spad"
     findTerm   = resource =? "spad"
     manageTerm = customFloating $ W.RationalRect l t w h
                where
@@ -227,7 +246,7 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  h = 0.7
                  w = 0.7
                  t = 0.85 -h
-                 l = 0.85 -w             
+                 l = 0.85 -w
 
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
@@ -246,7 +265,7 @@ dwindle  = renamed [Replace "dwindle"]
 spirals  = renamed [Replace "spirals"]
            $ windowNavigation
            $ mySpacing' 9
-           $ spiral (2/2)           
+           $ spiral (2/2)
 monocle  = renamed [Replace "monocle"]
            $ limitWindows 20 Full
 grid     = renamed [Replace "grid"]
@@ -299,12 +318,12 @@ clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
 ------------------------------------------------------------------------
 myManageHook :: Query (Endo WindowSet)
 myManageHook = (isDialog --> doF W.swapUp)
-               <+> insertPosition End Newer
+               <+> insertPosition Below Newer
                <+> namedScratchpadManageHook myScratchPads
                <+> composeAll
                [ (className =? "firefox" <&&> title =? "Library") --> doCenterFloat
-               , (className =? "gcolor2")        --> doCenterFloat
-               , (className =? "Gcolor2")        --> doCenterFloat
+               , (className =? "gcolor3")        --> doCenterFloat
+               , (className =? "Gcolor3")        --> doCenterFloat
                , (className =? "Gimp.bin")        --> doCenterFloat
                , (className =? "gimp.bin")        --> doCenterFloat
                , (className =? "mpv")            --> doCenterFloat
@@ -406,14 +425,14 @@ myKeys =
         , ("M1-e s", spawn (myEmacs ++ ("--eval '(eshell)'")))    -- eshell
         , ("M1-e d", spawn (myEmacs ++ ("--eval '(dired nil)'"))) -- dired
         , ("M1-e v", spawn (myEmacs ++ ("--eval '(+vterm/here nil)'"))) -- vterm if on Doom Emacs
-   
+
     --- My Applications
         , ("M1-d", spawn "gnome-disks")
         , ("M1-f", spawn "thunar")
         , ("M1-g", spawn "gthumb")
         , ("M1-m", spawn "gnome-system-monitor")
-        , ("M1-s", spawn "compton-trans -c -5")
-        , ("M1-S-s", spawn "compton-trans -c +5")
+    --    , ("M1-s", spawn "picon-trans -c -5")
+    --    , ("M1-C-s", spawn "picon-trans -c +5")
         , ("M1-v", spawn (myTerm ++ (" -e nvim ")))
 
     -- Multimedia Keys
@@ -461,7 +480,7 @@ main = do
               , ppLayout  = xmobarColor "#c678dd" "" .
                   ( \t -> case t of
                       "MouseResizableTile" -> "MRT"
-                      _ -> t
+                      _                    -> t
                   )
               }
         } `additionalKeysP` myKeys
